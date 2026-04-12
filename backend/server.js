@@ -1,0 +1,38 @@
+const express = require('express');
+const cors = require('cors');
+require('dotenv').config();
+
+const patientRoutes = require('./routes/patientRoutes');
+const doctorRoutes = require('./routes/doctorRoutes');
+const insuranceRoutes = require('./routes/insuranceRoutes');
+
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+
+// Routes
+app.use('/api/patients', patientRoutes);
+app.use('/api/doctor', doctorRoutes);
+app.use('/api/insurance', insuranceRoutes);
+
+// Health check
+app.get('/api/health', (req, res) => {
+    res.json({ status: 'OK', message: 'SarvCare API is running' });
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ success: false, error: 'Something went wrong!' });
+});
+
+app.listen(PORT, () => {
+    console.log(`🚀 SarvCare Server running on port ${PORT}`);
+    console.log(`📡 API endpoints:`);
+    console.log(`   - Patients:  http://localhost:${PORT}/api/patients`);
+    console.log(`   - Doctor:    http://localhost:${PORT}/api/doctor`);
+    console.log(`   - Insurance: http://localhost:${PORT}/api/insurance`);
+});
