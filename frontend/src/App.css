@@ -1,20 +1,188 @@
+/* App.css – Main app layout and responsive sidebar */
+
 .app-container {
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-body);
 }
 
 main {
-  background-color: var(--surface-color);
+  background-color: var(--bg-secondary);
+  transition: background-color var(--transition);
+  flex: 1;
 }
 
-@media (max-width: 768px) {
+/* Responsive sidebar – slide out on mobile */
+@media (max-width: 992px) {
   .sidebar {
     position: fixed;
+    top: 56px;
+    left: 0;
+    bottom: 0;
+    width: 260px;
     z-index: 1000;
     transform: translateX(-100%);
-    transition: transform 0.3s ease;
+    transition: transform var(--transition-fast);
+    background-color: var(--bg-surface);
+    box-shadow: var(--shadow-lg);
   }
   
   .sidebar.show {
     transform: translateX(0);
   }
+  
+  /* Overlay when sidebar is open */
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    transition: opacity var(--transition-fast);
+  }
+}
+
+/* Card hover effects (global) */
+.card-hover {
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Buttons base styling */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  transition: all var(--transition-fast);
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
+  color: white;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-secondary {
+  background: var(--bg-secondary);
+  border-color: var(--border-default);
+  color: var(--text-primary);
+}
+
+.btn-secondary:hover {
+  background: var(--bg-tertiary);
+}
+
+.btn-outline {
+  background: transparent;
+  border-color: var(--border-default);
+  color: var(--primary-500);
+}
+
+.btn-outline:hover {
+  background: var(--primary-50);
+  border-color: var(--primary-500);
+}
+
+/* Form controls */
+.form-control {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--primary-500);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.badge-success {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--success);
+}
+
+.badge-warning {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--warning);
+}
+
+.badge-danger {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--danger);
+}
+
+.badge-info {
+  background: rgba(59, 130, 246, 0.15);
+  color: var(--info);
+}
+
+/* Dark Theme Support */
+[data-theme="dark"] .app-container {
+  background-color: var(--bg-body);
+}
+
+[data-theme="dark"] main {
+  background-color: var(--bg-secondary);
+}
+
+[data-theme="dark"] .sidebar {
+  background-color: var(--bg-surface);
+  border-color: var(--border-default);
+}
+
+[data-theme="dark"] .sidebar.active {
+  background-color: var(--bg-surface);
+}
+
+[data-theme="dark"] .badge-success {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--success);
+}
+
+[data-theme="dark"] .badge-warning {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--warning);
+}
+
+[data-theme="dark"] .badge-danger {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--danger);
+}
+
+[data-theme="dark"] .badge-info {
+  background: rgba(59, 130, 246, 0.15);
+  color: var(--info);
 }

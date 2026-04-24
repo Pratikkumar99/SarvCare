@@ -171,3 +171,84 @@
     padding: 0.75rem 1rem;
   }
 }
+
+/* Dark Theme Support */
+[data-theme="dark"] .card {
+  background: var(--bg-surface);
+  border-color: var(--border-default);
+  box-shadow: var(--shadow-sm);
+}
+
+[data-theme="dark"] .card:hover {
+  border-color: var(--primary-400);
+}
+
+[data-theme="dark"] .card-header {
+  background: var(--bg-elevated);
+  border-bottom-color: var(--border-default);
+}
+
+[data-theme="dark"] .card-title {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .card-subtitle {
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .card-text {
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .card-footer {
+  background: var(--bg-elevated);
+  border-top-color: var(--border-default);
+}
+
+[data-theme="dark"] .card-badge-primary {
+  background: var(--primary-500);
+  color: white;
+}
+
+[data-theme="dark"] .card-badge-success {
+  background: var(--success);
+  color: white;
+}
+
+[data-theme="dark"] .card-badge-warning {
+  background: var(--warning);
+  color: white;
+}
+
+[data-theme="dark"] .card-badge-danger {
+  background: var(--danger);
+  color: white;
+}
+
+[data-theme="dark"] .card-badge-info {
+  background: var(--info);
+  color: white;
+}
+
+[data-theme="dark"] .card-badge-muted {
+  background: var(--bg-tertiary);
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .btn-gradient {
+  background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
+  border: none;
+  color: white;
+}
+
+[data-theme="dark"] .btn-gradient:hover {
+  background: linear-gradient(135deg, var(--primary-600), var(--primary-800));
+}
+
+[data-theme="dark"] .card-hover:hover {
+  border-color: var(--primary-400);
+}
+
+[data-theme="dark"] .card-interactive:hover {
+  border-color: var(--primary-400);
+}

@@ -1,6 +1,6 @@
 ﻿import React, { useEffect, useState, useCallback } from "react";
 import { patientAPI, API_URL } from "../services/api";
-import "./PatientDashboard.css";
+import "../styles/Dashboard.css";
 
 const PatientDashboard = ({ user }) => {
   const [patient, setPatient] = useState(null);
@@ -18,29 +18,29 @@ const PatientDashboard = ({ user }) => {
     try {
       setLoading(true);
 
-      // Get patient's own record
       const patientRes = await patientAPI.getAll(user?.id, user?.role);
-      console.log(' API Response:', patientRes.data);
-      const patientData = patientRes.data.patients[0];
-      console.log(' Patient Data:', patientData);
+      const patientData = patientRes.data.patients?.[0];
       setPatient(patientData);
 
       if (patientData) {
-        // Get full patient details including prescriptions, claims, summaries
         const detailsRes = await patientAPI.getById(
           patientData.id,
           user?.id,
           user?.role,
         );
         if (detailsRes.data.success) {
-          setPrescriptions(detailsRes.data.patient.prescriptions || []);
-          setClaims(detailsRes.data.patient.claims || []);
-          setSummaries(detailsRes.data.patient.summaries || []);
+          const prescriptionsData = detailsRes.data.patient.prescriptions || [];
+          const claimsData = detailsRes.data.patient.claims || [];
+          const summariesData = detailsRes.data.patient.summaries || [];
+
+          setPrescriptions(prescriptionsData);
+          setClaims(claimsData);
+          setSummaries(summariesData);
 
           setStats({
-            prescriptions: detailsRes.data.patient.prescriptions?.length || 0,
-            claims: detailsRes.data.patient.claims?.length || 0,
-            summaries: detailsRes.data.patient.summaries?.length || 0,
+            prescriptions: prescriptionsData.length,
+            claims: claimsData.length,
+            summaries: summariesData.length,
           });
         }
       }
@@ -57,7 +57,7 @@ const PatientDashboard = ({ user }) => {
 
   if (loading) {
     return (
-      <div className=" dashboard-loading">
+      <div className="dashboard-loading">
         <div className="spinner"></div>
         <p>Loading your medical records...</p>
       </div>
@@ -65,192 +65,138 @@ const PatientDashboard = ({ user }) => {
   }
 
   return (
-    <div className="patient-dashboard">
+    <div className="dashboard-container">
+      {/* Header */}
       <div className="dashboard-header">
-        <h1>My Medical Records</h1>
-        <p className="welcome-text">Welcome , {user?.name}</p>
+        <div className="dashboard-header-content">
+          <h1>Welcome back, {user?.name}!</h1>
+          <p>Here's your medical records overview</p>
+        </div>
       </div>
-
       {/* Stats Cards */}
       <div className="stats-grid">
         <div className="stat-card primary">
-          <div className="stat-icon">
-            <i className="fas fa-prescription-bottle-alt"></i>
-          </div>
-          <div className="stat-info">
-            <h3>{stats.prescriptions}</h3>
-            <p>Prescriptions</p>
+          <div className="stat-content">
+            <div className="stat-info">
+              <h3>{stats.prescriptions}</h3>
+              <p>Prescriptions</p>
+            </div>
           </div>
         </div>
+        
         <div className="stat-card success">
-          <div className="stat-icon">
-            <i className="fas fa-file-medical-alt"></i>
-          </div>
-          <div className="stat-info">
-            <h3>{stats.claims}</h3>
-            <p>Insurance Claims</p>
+          <div className="stat-content">
+            <div className="stat-info">
+              <h3>{stats.claims}</h3>
+              <p>Insurance Claims</p>
+            </div>
           </div>
         </div>
+        
         <div className="stat-card info">
-          <div className="stat-icon">
-            <i className="fas fa-file-alt"></i>
-          </div>
-          <div className="stat-info">
-            <h3>{stats.summaries}</h3>
-            <p>Medical Summaries</p>
+          <div className="stat-content">
+            <div className="stat-info">
+              <h3>{stats.summaries}</h3>
+              <p>Medical Summaries</p>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="dashboard-content">
-        {/* Personal Information */}
-        {patient && (
-          <div className="dashboard-card">
-            <h2>
-              <i className="fas fa-user-circle"></i> Personal Information
-            </h2>
-            <div className="info-grid">
-              <div className="info-item">
-                <label>Name:</label>
-                <span>{patient.name}</span>
-              </div>
-              <div className="info-item">
-                <label>Email:</label>
-                <span>{patient.email}</span>
-              </div>
-              <div className="info-item">
-                <label>Age:</label>
-                <span>{user?.age || patient.age} years</span>
-              </div>
-              <div className="info-item">
-                <label>Gender:</label>
-                <span>{patient.gender}</span>
-              </div>
-              <div className="info-item full-width">
-                <label>Medical History:</label>
-                <span>{patient.history || "No medical history recorded"}</span>
-              </div>
+      {/* Prescriptions Section */}
+      <div className="dashboard-section">
+        <div className="dashboard-section-header">
+          <h2 className="dashboard-section-title">My Prescriptions ({prescriptions.length})</h2>
+        </div>
+        <div className="dashboard-section-body">
+          {prescriptions.length === 0 ? (
+            <div className="empty-state">
+              <h3>No prescriptions found</h3>
+              <p>No prescriptions have been recorded for you yet.</p>
             </div>
-          </div>
-        )}
-
-        {/* Prescriptions */}
-        <div className="dashboard-card">
-          <h2>
-            <i className="fas fa-prescription"></i> My Prescriptions
-          </h2>
-          {prescriptions.length > 0 ? (
-            <div className="prescriptions-list">
+          ) : (
+            <div className="prescription-grid">
               {prescriptions.map((prescription) => (
-                <div key={prescription.id} className="prescription-item">
+                <div key={prescription.id} className="prescription-card">
                   <div className="prescription-header">
-                    <h4>{prescription.medication}</h4>
-                    <span className="date">
+                    <span className="prescription-date">
                       {new Date(prescription.created_at).toLocaleDateString()}
                     </span>
+                    <span className="prescription-doctor">Dr. {prescription.doctor_name}</span>
                   </div>
-                  <p>
-                    <strong>Prescribed by:</strong> {prescription.doctor_name}
-                  </p>
-                  <p>
-                    <strong>Dosage:</strong> {prescription.dosage}
-                  </p>
-                  <p>
-                    <strong>Instructions:</strong> {prescription.instructions}
-                  </p>
+                  <div className="prescription-content">
+                    <h4>{prescription.medication}</h4>
+                    <p><strong>Dosage:</strong> {prescription.dosage || 'Not specified'}</p>
+                    <p><strong>Instructions:</strong> {prescription.instructions || prescription.notes || 'No instructions provided'}</p>
+                  </div>
+                  <div className="prescription-actions">
+                    <button className="action-btn">View Details</button>
+                    <button className="action-btn">Refill</button>
+                  </div>
                 </div>
               ))}
             </div>
-          ) : (
-            <p className="no-data">No prescriptions found.</p>
           )}
         </div>
+      </div>
 
-        {/* Claims */}
-        <div className="dashboard-card">
-          <h2>
-            <i className="fas fa-clipboard-check"></i> My Insurance Claims
-          </h2>
-          {claims.length > 0 ? (
-            <div className="claims-list">
+      {/* Insurance Claims Section */}
+      <div className="dashboard-section">
+        <div className="dashboard-section-header">
+          <h2 className="dashboard-section-title">Insurance Claims ({claims.length})</h2>
+        </div>
+        <div className="dashboard-section-body">
+          {claims.length === 0 ? (
+            <div className="empty-state">
+              <h3>No insurance claims found</h3>
+              <p>No insurance claims have been submitted yet.</p>
+            </div>
+          ) : (
+            <div className="claim-grid">
               {claims.map((claim) => (
-                <div
-                  key={claim.id}
-                  className={"claim-item status-" + claim.status.toLowerCase()}
-                >
+                <div key={claim.id} className="claim-card">
                   <div className="claim-header">
-                    <h4>{claim.treatment}</h4>
-                    <span
-                      className={"status-badge " + claim.status.toLowerCase()}
-                    >
-                      {claim.status}
-                    </span>
+                    <span className="claim-id">#{claim.id}</span>
+                    <span className={`claim-status status-${claim.status}`}>{claim.status}</span>
+                    <span className="claim-date">{new Date(claim.created_at).toLocaleDateString()}</span>
                   </div>
-                  <p>
-                    <strong>Cost:</strong> ₹{claim.cost}
-                  </p>
-                  <p>
-                    <strong>Date:</strong>{" "}
-                    {new Date(claim.created_at).toLocaleDateString()}
-                  </p>
+                  <div className="claim-content">
+                    <h4>{claim.treatment || 'Medical Treatment'}</h4>
+                    <p>{claim.description || 'No description available'}</p>
+                    <p><strong>Amount:</strong> ${parseFloat(claim.cost || 0).toLocaleString()}</p>
+                  </div>
                 </div>
               ))}
             </div>
-          ) : (
-            <p className="no-data">No claims found.</p>
           )}
         </div>
+      </div>
 
-        {/* Medical Summaries */}
-        <div className="dashboard-card">
-          <h2>
-            <i className="fas fa-file-medical"></i> Medical Summaries
-          </h2>
-          {summaries.length > 0 ? (
-            <div className="summaries-list">
+      {/* Medical Summaries Section */}
+      <div className="dashboard-section">
+        <div className="dashboard-section-header">
+          <h2 className="dashboard-section-title">Medical Summaries ({summaries.length})</h2>
+        </div>
+        <div className="dashboard-section-body">
+          {summaries.length === 0 ? (
+            <div className="empty-state">
+              <h3>No medical summaries available</h3>
+              <p>No medical summaries have been generated yet.</p>
+            </div>
+          ) : (
+            <div className="summary-grid">
               {summaries.map((summary) => (
-                <div key={summary.id} className="summary-item">
-                  <p className="summary-text">{summary.summary_text}</p>
-                  <p className="generated-by">
-                    Generated by: {summary.generated_by_name} on{" "}
-                    {new Date(summary.created_at).toLocaleDateString()}
-                  </p>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="no-data">No summaries available.</p>
-          )}
-        </div>
-
-        {/* Reports */}
-        <div className="dashboard-card">
-          <h2>
-            <i className="fas fa-file-pdf"></i> My Reports
-          </h2>
-          {patient?.reports?.length > 0 ? (
-            <div className="reports-list">
-              {patient.reports.map((report) => (
-                <div key={report.id} className="report-item">
-                  <div className="report-header">
-                    <h4>{report.title}</h4>
-                    <a
-                      href={`${API_URL}/reports/download/${report.id}`}
-                      className="btn btn-sm btn-primary"
-                      download
-                    >
-                      <i className="fas fa-download me-1"></i>Download
-                    </a>
+                <div key={summary.id} className="summary-card">
+                  <div className="summary-header">
+                    <span className="summary-date">{new Date(summary.created_at).toLocaleDateString()}</span>
+                    <span className="summary-doctor">Dr. {summary.generated_by_name}</span>
                   </div>
-                  <p className="text-muted small">
-                    Uploaded by: {report.doctor_name} on{" "}
-                    {new Date(report.created_at).toLocaleDateString()}
-                  </p>
+                  <div className="summary-content">
+                    <p>{summary.summary_text}</p>
+                  </div>
                 </div>
               ))}
             </div>
-          ) : (
-            <p className="no-data">No reports available.</p>
           )}
         </div>
       </div>

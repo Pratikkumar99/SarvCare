@@ -1,12 +1,14 @@
-/* index.css – Reset & base */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+/* index.css – Global reset, base styles, and utility classes */
 
+/* CSS variables are imported from theme.css – make sure it's loaded first */
+@import './styles/theme.css';
+
+/* Reset */
+*,
 *::before,
 *::after {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
 }
 
@@ -14,7 +16,6 @@ html {
   font-size: 16px;
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
-  -moz-text-size-adjust: 100%;
   text-size-adjust: 100%;
 }
 
@@ -23,10 +24,9 @@ body {
   background-color: var(--bg-body);
   color: var(--text-primary);
   line-height: 1.5;
-  transition: var(--transition);
+  transition: background-color var(--transition), color var(--transition);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
 }
 
 /* Typography */
@@ -50,45 +50,18 @@ p {
 }
 
 a {
-  color: var(--primary-color);
+  color: var(--primary-500);
   text-decoration: none;
-  transition: var(--transition-fast);
+  transition: color var(--transition-fast);
 }
 
 a:hover {
-  color: var(--primary-dark);
+  color: var(--primary-600);
   text-decoration: underline;
 }
 
-/* Code blocks */
-code {
-  font-family: 'Fira Code', 'Monaco', 'Cascadia Code', 'Segoe UI Mono', monospace;
-  font-size: 0.875em;
-  background-color: var(--bg-tertiary);
-  padding: 0.125rem 0.25rem;
-  border-radius: var(--radius-sm);
-  color: var(--text-primary);
-}
-
-pre {
-  font-family: 'Fira Code', 'Monaco', 'Cascadia Code', 'Segoe UI Mono', monospace;
-  background-color: var(--bg-tertiary);
-  padding: 1rem;
-  border-radius: var(--radius-md);
-  overflow-x: auto;
-  line-height: 1.5;
-}
-
-pre code {
-  background: none;
-  padding: 0;
-}
-
 /* Form elements */
-input,
-textarea,
-select,
-button {
+input, textarea, select, button {
   font-family: inherit;
   font-size: inherit;
   line-height: inherit;
@@ -123,7 +96,6 @@ ul, ol {
 /* Tables */
 table {
   border-collapse: collapse;
-  border-spacing: 0;
   width: 100%;
 }
 
@@ -137,6 +109,10 @@ table {
 
 .hover-bg-light:hover {
   background-color: var(--bg-secondary);
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }
 
 .sr-only {
@@ -153,22 +129,17 @@ table {
 
 /* Focus styles */
 :focus-visible {
-  outline: 2px solid var(--primary-color);
+  outline: 2px solid var(--primary-500);
   outline-offset: 2px;
 }
 
 /* Selection */
 ::selection {
-  background-color: var(--primary-color);
+  background-color: var(--primary-500);
   color: white;
 }
 
-::-moz-selection {
-  background-color: var(--primary-color);
-  color: white;
-}
-
-/* Scrollbar styling */
+/* Scrollbar styling (Webkit) */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -187,22 +158,13 @@ table {
   background: var(--gray-500);
 }
 
-::-webkit-scrollbar-corner {
-  background: var(--bg-body);
-}
-
 /* Firefox scrollbar */
 * {
   scrollbar-width: thin;
   scrollbar-color: var(--gray-400) var(--bg-body);
 }
 
-/* Smooth scrolling */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Reduce motion for users who prefer it */
+/* Reduce motion for accessibility */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -214,30 +176,19 @@ html {
   }
 }
 
-/* High contrast mode support */
+/* High contrast mode */
 @media (prefers-contrast: high) {
   :root {
     --border-default: var(--gray-600);
     --text-muted: var(--gray-700);
   }
-  
   [data-theme="dark"] {
     --border-default: var(--gray-500);
     --text-muted: var(--gray-300);
   }
 }
 
-.cursor-pointer {
-  cursor: pointer;
-}
-
-.sidebar {
-  position: sticky;
-  top: 56px;
-  height: calc(100vh - 56px);
-}
-
-/* Responsive improvements */
+/* Responsive grid utilities (can be used by components) */
 @media (max-width: 768px) {
   .stats-grid {
     grid-template-columns: 1fr !important;
@@ -255,69 +206,25 @@ html {
     right: 5vw;
     bottom: 80px;
   }
-  
-  .dashboard-layout {
-    padding: 1rem;
-  }
-  
-  .card-modern {
-    margin-bottom: 1rem;
-  }
 }
 
-/* Micro-interactions */
-.btn {
-  transition: var(--transition-fast);
-}
-
-.btn:active {
-  transform: scale(0.95);
-}
-
-a {
-  transition: var(--transition-fast);
-}
-
-.form-control:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px var(--primary-color);
-  border-color: var(--primary-color);
-}
-
-/* Focus ring improvements */
-.form-control:focus-visible,
-.btn:focus-visible {
-  outline: 2px solid var(--primary-color);
-  outline-offset: 2px;
-}
-
-.card {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
-}
-
-.nav-link {
-  transition: all 0.2s ease;
-}
-
-.badge {
-  font-size: 0.75rem;
-  padding: 0.5em 0.75em;
-}
-
+/* Print styles */
 @media print {
   .navbar,
   .sidebar,
-  .btn {
+  .chatbot-container,
+  .btn,
+  .no-print {
     display: none !important;
   }
   
   main {
     margin-left: 0 !important;
     padding: 0 !important;
+  }
+  
+  body {
+    background: white;
+    color: black;
   }
 }

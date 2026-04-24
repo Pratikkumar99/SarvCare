@@ -35,7 +35,7 @@ const AppContent = ({ user, setUser }) => {
             {!isLoginPage && <Navbar userRole={user?.role} user={user} />}
             <div className="d-flex">
                 {!isLoginPage && <Sidebar userRole={user?.role} />}
-                <main className="flex-grow-1 p-4" style={{ minHeight: 'calc(100vh - 56px)', backgroundColor: '#f8f9fa' }}>
+                <main className="flex-grow-1 p-4" style={{ minHeight: 'calc(100vh - 56px)', backgroundColor: 'var(--bg-body)' }}>
                     <Routes>
                         <Route path="/dashboard" element={<Dashboard user={user} />} />
                         <Route path="/patient" element={<PatientDashboard user={user} />} />

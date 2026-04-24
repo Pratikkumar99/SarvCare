@@ -10,6 +10,7 @@ const Chatbot = ({ user }) => {
     const [isTyping, setIsTyping] = useState(false);
     const [isOnline, setIsOnline] = useState(false);
     const [showAllSuggestions, setShowAllSuggestions] = useState(false);
+    const [magicAnimation, setMagicAnimation] = useState(false);
     const messagesEndRef = useRef(null);
     const inputRef = useRef(null);
 
@@ -156,10 +157,10 @@ const Chatbot = ({ user }) => {
                     <div className="header-content">
                         <div className="bot-info">
                             <div className="bot-avatar">
-                                🏥
+                                🤖
                             </div>
                             <div className="bot-details">
-                                <h3>SarvCare AI</h3>
+                                <h3 className="bot-name">SarvCare AI</h3>
                                 <div className="status-indicator">
                                     <span className={`status-dot ${isOnline ? 'online' : 'offline'}`}></span>
                                     <span className="status-text">
@@ -172,7 +173,6 @@ const Chatbot = ({ user }) => {
                             className="close-btn"
                             onClick={() => setIsOpen(false)}
                             aria-label="Close chat"
-                            style={{ background: 'rgba(255, 255, 255, 0.2)' }}
                         >
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -197,36 +197,45 @@ const Chatbot = ({ user }) => {
                     
                     {/* Suggested Questions - Show only when no messages or last message is from bot */}
                     {messages.length === 0 || (messages[messages.length - 1]?.sender === 'bot' && !isTyping) ? (
-                        <div className="suggested-questions">
-                            <p className="suggestions-title">💡 Suggested Questions:</p>
-                            <div className="suggestions-grid">
-                                {getSuggestedQuestions()
-                                    .slice(0, showAllSuggestions ? getSuggestedQuestions().length : 4)
-                                    .map((question, index) => (
-                                        <button
-                                            key={index}
-                                            className="suggestion-btn"
-                                            onClick={() => handleSuggestedQuestion(question)}
-                                            disabled={isLoading}
-                                        >
-                                            {question}
-                                        </button>
-                                    ))}
-                            </div>
-                            {getSuggestedQuestions().length > 4 && (
-                                <button
-                                    className="more-suggestions-btn"
-                                    onClick={() => setShowAllSuggestions(!showAllSuggestions)}
-                                    disabled={isLoading}
-                                >
-                                    {showAllSuggestions ? '🔼 Show Less' : '🔽 Show More Questions'}
-                                </button>
+                        <div 
+                            className={`suggested-questions ${magicAnimation ? 'magic-reveal' : ''}`}
+                            onClick={() => {
+                                if (!showAllSuggestions) {
+                                    setMagicAnimation(true);
+                                    setTimeout(() => setMagicAnimation(false), 600);
+                                }
+                                setShowAllSuggestions(!showAllSuggestions);
+                            }}
+                        >
+                            <p className="suggestions-title">✨ Suggestions:</p>
+                            {showAllSuggestions && (
+                                <>
+                                    <div className="suggestions-grid">
+                                        {getSuggestedQuestions().map((question, index) => (
+                                            <button
+                                                key={index}
+                                                className="suggestion-btn"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleSuggestedQuestion(question);
+                                                }}
+                                                disabled={isLoading}
+                                            >
+                                                {question}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </>
+                            )}
+                            {!showAllSuggestions && getSuggestedQuestions().length > 0 && (
+                                <p className="suggestions-hint">Click the card above to reveal suggestions</p>
                             )}
                         </div>
                     ) : null}
                     
                     {isTyping && (
                         <div className="message bot typing">
+                            <div className="bot-avatar">🤖</div>
                             <div className="typing-indicator">
                                 <span></span>
                                 <span></span>
@@ -240,7 +249,8 @@ const Chatbot = ({ user }) => {
                 {/* Disclaimer */}
                 <div className="chatbot-disclaimer">
                     <small>
-                        ⚠️ I provide general health information only. 
+                        <span className="warning-icon">⚠️</span>
+                        I provide general health information only. 
                         For medical advice, please consult a healthcare professional.
                     </small>
                 </div>

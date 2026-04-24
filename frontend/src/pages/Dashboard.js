@@ -23,26 +23,20 @@ const Dashboard = ({ user }) => {
     const fetchDashboardData = async () => {
         try {
             setLoading(true);
-            
-            // Fetch patients
             const patientsRes = await patientAPI.getAll();
             const patients = patientsRes.data.patients || [];
-            
-            // Fetch claims
             const claimsRes = await insuranceAPI.getAllClaims();
             const claims = claimsRes.data.claims || [];
-            
-            // Calculate stats
+
             const pendingClaims = claims.filter(c => c.status === 'pending').length;
             const approvedClaims = claims.filter(c => c.status === 'approved').length;
-            
+
             setStats({
                 totalPatients: patients.length,
                 totalClaims: claims.length,
                 pendingClaims,
                 approvedClaims
             });
-            
             setRecentPatients(patients.slice(0, 3));
             setRecentClaims(claims.slice(0, 3));
         } catch (err) {
@@ -54,10 +48,9 @@ const Dashboard = ({ user }) => {
 
     if (loading) {
         return (
-            <div className="d-flex justify-content-center align-items-center" style={{ height: '60vh' }}>
-                <div className="spinner-border text-primary" role="status">
-                    <span className="visually-hidden">Loading...</span>
-                </div>
+            <div className="dashboard-loading">
+                <div className="spinner"></div>
+                <p>Loading dashboard...</p>
             </div>
         );
     }
@@ -71,13 +64,13 @@ const Dashboard = ({ user }) => {
                     <p>Here's your healthcare management overview</p>
                 </div>
                 <div className="dashboard-actions">
-                    <button className="btn-gradient">Generate Report</button>
+                    <button className="btn-primary">📊 Generate Report</button>
                 </div>
             </div>
 
             {/* Stats Cards */}
             <div className="stats-grid">
-                <div className="stat-card">
+                <div className="stat-card primary">
                     <div className="stat-content">
                         <div className="stat-info">
                             <h3>{stats.totalPatients}</h3>
@@ -121,26 +114,17 @@ const Dashboard = ({ user }) => {
                     <h3 className="dashboard-section-title">Recent Patients</h3>
                 </div>
                 <div className="dashboard-section-body">
-                    {loading ? (
-                        <div className="loading-state">
-                            <div className="spinner-border text-primary" role="status">
-                                <span className="visually-hidden">Loading...</span>
-                            </div>
-                        </div>
-                    ) : (
+                    {recentPatients.length > 0 ? (
                         <div className="card-grid">
                             {recentPatients.map(patient => (
-                                <div className="col-md-4" key={patient.id}>
-                                    <PatientCard patient={patient} />
-                                </div>
+                                <PatientCard key={patient.id} patient={patient} />
                             ))}
-                            {recentPatients.length === 0 && (
-                                <div className="empty-state">
-                                    <div className="empty-state-icon">👥</div>
-                                    <h3>No patients found</h3>
-                                    <p>No patients have been added to the system yet.</p>
-                                </div>
-                            )}
+                        </div>
+                    ) : (
+                        <div className="empty-state">
+                            <div className="empty-state-icon">👥</div>
+                            <h3>No patients found</h3>
+                            <p>No patients have been added to the system yet.</p>
                         </div>
                     )}
                 </div>
@@ -152,26 +136,17 @@ const Dashboard = ({ user }) => {
                     <h3 className="dashboard-section-title">Recent Claims</h3>
                 </div>
                 <div className="dashboard-section-body">
-                    {loading ? (
-                        <div className="loading-state">
-                            <div className="spinner-border text-primary" role="status">
-                                <span className="visually-hidden">Loading...</span>
-                            </div>
-                        </div>
-                    ) : (
+                    {recentClaims.length > 0 ? (
                         <div className="card-grid">
                             {recentClaims.map(claim => (
-                                <div className="col-md-4" key={claim.id}>
-                                    <ClaimCard claim={claim} />
-                                </div>
+                                <ClaimCard key={claim.id} claim={claim} showActions={false} />
                             ))}
-                            {recentClaims.length === 0 && (
-                                <div className="empty-state">
-                                    <div className="empty-state-icon">📋</div>
-                                    <h3>No claims found</h3>
-                                    <p>No insurance claims have been submitted yet.</p>
-                                </div>
-                            )}
+                        </div>
+                    ) : (
+                        <div className="empty-state">
+                            <div className="empty-state-icon">📋</div>
+                            <h3>No claims found</h3>
+                            <p>No insurance claims have been submitted yet.</p>
                         </div>
                     )}
                 </div>

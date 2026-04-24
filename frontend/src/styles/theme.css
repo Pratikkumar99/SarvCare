@@ -1,5 +1,11 @@
+/* theme.css – Complete, clean design system for SarvCare */
+
+/* ============================================
+   CSS CUSTOM PROPERTIES (Design Tokens)
+   ============================================ */
+
 :root {
-  /* Primary colors */
+  /* Primary palette – modern blue */
   --primary-50: #eff6ff;
   --primary-100: #dbeafe;
   --primary-200: #bfdbfe;
@@ -11,7 +17,7 @@
   --primary-800: #1e40af;
   --primary-900: #1e3a8a;
 
-  /* Neutral scale */
+  /* Neutral grayscale */
   --gray-50: #f9fafb;
   --gray-100: #f3f4f6;
   --gray-200: #e5e7eb;
@@ -23,445 +29,305 @@
   --gray-800: #1f2937;
   --gray-900: #111827;
 
-  /* Semantic */
+  /* Semantic colors */
   --success: #10b981;
+  --success-dark: #059669;
   --warning: #f59e0b;
+  --warning-dark: #d97706;
   --danger: #ef4444;
+  --danger-dark: #dc2626;
   --info: #3b82f6;
 
-  /* Design tokens */
+  /* Typography & spacing */
   --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --radius-sm: 0.375rem;
   --radius-md: 0.5rem;
   --radius-lg: 0.75rem;
   --radius-xl: 1rem;
+
+  /* Shadows */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 300ms ease;
 }
 
-/* Light theme (default) */
+/* ============================================
+   LIGHT THEME (default)
+   ============================================ */
 :root {
   --bg-body: var(--gray-50);
-  --bg-surface: white;
+  --bg-surface: #ffffff;
+  --bg-elevated: #ffffff;
+  --bg-secondary: var(--gray-100);
+  --bg-tertiary: var(--gray-200);
   --border-default: var(--gray-200);
+  --border-light: var(--gray-100);
   --text-primary: var(--gray-900);
   --text-secondary: var(--gray-600);
   --text-muted: var(--gray-500);
+  --shadow-color: rgba(0, 0, 0, 0.08);
 }
 
-/* Dark theme */
+/* ============================================
+   DARK THEME
+   ============================================ */
 [data-theme="dark"] {
   --bg-body: var(--gray-900);
   --bg-surface: var(--gray-800);
+  --bg-elevated: var(--gray-700);
+  --bg-secondary: var(--gray-800);
+  --bg-tertiary: var(--gray-700);
   --border-default: var(--gray-700);
+  --border-light: var(--gray-800);
   --text-primary: var(--gray-50);
   --text-secondary: var(--gray-300);
   --text-muted: var(--gray-400);
+  --shadow-color: rgba(0, 0, 0, 0.3);
 }
 
+/* ============================================
+   GLOBAL BASE STYLES
+   ============================================ */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 body {
   font-family: var(--font-sans);
   background-color: var(--bg-body);
   color: var(--text-primary);
-  transition: var(--transition);
+  line-height: 1.5;
+  transition: background-color var(--transition), color var(--transition);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Apply theme colors to common elements */
-html, body, #root {
-  background-color: var(--bg-body) !important;
-  color: var(--text-primary) !important;
-  transition: var(--transition-default);
-}
+/* ============================================
+   THEMED COMPONENT OVERRIDES
+   ============================================ */
 
-/* Ensure theme variables are applied to root element */
-.app-container {
-  background-color: var(--bg-body) !important;
-  color: var(--text-primary) !important;
-  min-height: 100vh;
-}
-
-/* Override Bootstrap defaults */
-body {
-  background-color: var(--bg-body) !important;
-  color: var(--text-primary) !important;
-}
-
-/* Card backgrounds */
+/* Cards */
 .card,
 .auth-card,
 .chatbot-window,
 .dashboard-card {
   background-color: var(--bg-surface);
-  border-color: var(--border-default);
+  border: 1px solid var(--border-default);
   color: var(--text-primary);
-}
-
-/* Component-specific theme variables */
-.btn-primary {
-  background-color: var(--primary-color) !important;
-  border-color: var(--primary-color) !important;
-}
-
-.btn-primary:hover {
-  background-color: var(--primary-dark) !important;
-  border-color: var(--primary-dark) !important;
-}
-
-.text-primary {
-  color: var(--primary-color) !important;
-}
-
-.bg-primary {
-  background-color: var(--primary-color) !important;
-}
-
-.text-muted {
-  color: var(--text-muted) !important;
-}
-
-.bg-light {
-  background-color: var(--bg-secondary) !important;
-}
-
-.border {
-  border-color: var(--border-default) !important;
-}
-
-/* Form elements */
-.form-control {
-  background-color: var(--bg-primary) !important;
-  border-color: var(--border-default) !important;
-  color: var(--text-primary) !important;
-}
-
-.form-control:focus {
-  background-color: var(--bg-primary) !important;
-  border-color: var(--primary-color) !important;
-  color: var(--text-primary) !important;
-  box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25) !important;
-}
-
-/* Navigation */
-.navbar {
-  background-color: var(--primary-color) !important;
-}
-
-.navbar-dark .navbar-nav .nav-link {
-  color: rgba(255, 255, 255, 0.8) !important;
-}
-
-.navbar-dark .navbar-nav .nav-link:hover {
-  color: white !important;
-}
-
-/* Sidebar */
-.sidebar {
-  background-color: var(--bg-surface) !important;
-  border-right: 1px solid var(--border-default) !important;
-}
-
-/* Tables */
-.table {
-  color: var(--text-primary) !important;
-}
-
-.table th {
-  background-color: var(--bg-secondary) !important;
-  border-color: var(--border-default) !important;
-  color: var(--text-primary) !important;
-}
-
-.table td {
-  border-color: var(--border-default) !important;
-}
-
-/* Modals */
-.modal-content {
-  background-color: var(--bg-surface) !important;
-  color: var(--text-primary) !important;
-}
-
-.modal-header {
-  background-color: var(--bg-elevated) !important;
-  border-bottom-color: var(--border-default) !important;
-}
-
-.modal-footer {
-  background-color: var(--bg-elevated) !important;
-  border-top-color: var(--border-default) !important;
-}
-
-/* Alerts */
-.alert {
-  background-color: var(--bg-surface) !important;
-  border-color: var(--border-default) !important;
-  color: var(--text-primary) !important;
-}
-
-/* Badges */
-.badge {
-  background-color: var(--bg-secondary) !important;
-  color: var(--text-primary) !important;
-}
-
-/* Progress bars */
-.progress {
-  background-color: var(--bg-tertiary) !important;
-}
-
-.progress-bar {
-  background-color: var(--primary-color) !important;
-}
-
-/* Form elements */
-.form-control,
-.form-select {
-  background-color: var(--background-color);
-  border-color: var(--border-color);
-  color: var(--text-color);
-}
-
-.form-control:focus,
-.form-select:focus {
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+  border-radius: var(--radius-lg);
+  transition: var(--transition);
 }
 
 /* Buttons */
 .btn-primary {
-  background-color: var(--primary-color);
-  border-color: var(--primary-color);
+  background-color: var(--primary-600) !important;
+  border-color: var(--primary-600) !important;
 }
-
 .btn-primary:hover {
-  background-color: var(--primary-dark);
-  border-color: var(--primary-dark);
+  background-color: var(--primary-700) !important;
+  border-color: var(--primary-700) !important;
 }
 
 .btn-outline-primary {
-  color: var(--primary-color);
-  border-color: var(--primary-color);
+  color: var(--primary-600);
+  border-color: var(--primary-600);
+}
+.btn-outline-primary:hover {
+  background-color: var(--primary-600);
+  border-color: var(--primary-600);
+  color: white;
 }
 
-.btn-outline-primary:hover {
-  background-color: var(--primary-color);
-  border-color: var(--primary-color);
-  color: white;
+/* Form controls */
+.form-control,
+.form-select {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  color: var(--text-primary);
+  border-radius: var(--radius-md);
+  transition: var(--transition-fast);
+}
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--primary-500);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
 }
 
 /* Navbar */
 .navbar {
-  background-color: var(--surface-color) !important;
-  border-color: var(--border-color) !important;
+  background: linear-gradient(135deg, var(--primary-600), var(--primary-800));
 }
-
-.navbar-brand,
-.nav-link {
-  color: var(--text-color) !important;
+.navbar-dark .navbar-nav .nav-link {
+  color: rgba(255, 255, 255, 0.85);
 }
-
-.navbar-brand:hover,
-.nav-link:hover {
-  color: var(--primary-color) !important;
+.navbar-dark .navbar-nav .nav-link:hover {
+  color: white;
 }
 
 /* Sidebar */
 .sidebar {
-  background-color: var(--surface-color) !important;
-  border-color: var(--border-color) !important;
+  background-color: var(--bg-surface);
+  border-right: 1px solid var(--border-default);
 }
-
 .sidebar .nav-link {
-  color: var(--text-secondary) !important;
+  color: var(--text-secondary);
 }
-
 .sidebar .nav-link:hover,
 .sidebar .nav-link.active {
-  color: var(--primary-color) !important;
-  background-color: var(--background-color) !important;
+  color: var(--primary-600);
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-md);
 }
 
 /* Tables */
 .table {
-  color: var(--text-color);
+  color: var(--text-primary);
+  border-color: var(--border-default);
 }
-
 .table thead th {
-  background-color: var(--surface-color);
-  border-color: var(--border-color);
-  color: var(--text-color);
+  background-color: var(--bg-secondary);
+  border-bottom: 2px solid var(--border-default);
+  color: var(--text-primary);
 }
-
 .table tbody tr:hover {
-  background-color: var(--surface-color);
+  background-color: var(--bg-tertiary);
 }
 
-/* Alerts */
-.alert {
-  background-color: var(--surface-color);
-  border-color: var(--border-color);
-  color: var(--text-color);
-}
-
-.alert-success {
-  background-color: var(--success-color);
-  border-color: var(--success-color);
-  color: white;
-}
-
-.alert-warning {
-  background-color: var(--warning-color);
-  border-color: var(--warning-color);
-  color: white;
-}
-
-.alert-danger {
-  background-color: var(--error-color);
-  border-color: var(--error-color);
-  color: white;
-}
-
-/* Modal */
+/* Modals */
 .modal-content {
-  background-color: var(--surface-color);
-  color: var(--text-color);
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  color: var(--text-primary);
 }
-
-.modal-header {
-  border-color: var(--border-color);
-}
-
+.modal-header,
 .modal-footer {
-  border-color: var(--border-color);
+  border-color: var(--border-default);
 }
 
-/* Dropdown */
+/* Dropdowns */
 .dropdown-menu {
-  background-color: var(--surface-color);
-  border-color: var(--border-color);
-  color: var(--text-color);
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  color: var(--text-primary);
 }
-
 .dropdown-item {
-  color: var(--text-color);
+  color: var(--text-primary);
 }
-
 .dropdown-item:hover {
-  background-color: var(--primary-color);
+  background-color: var(--primary-600);
   color: white;
 }
 
 /* Badges */
 .badge {
-  color: white;
+  font-weight: 600;
 }
+.bg-primary { background-color: var(--primary-600) !important; }
+.bg-success { background-color: var(--success) !important; }
+.bg-warning { background-color: var(--warning) !important; color: var(--gray-900); }
+.bg-danger { background-color: var(--danger) !important; }
 
-.bg-primary {
-  background-color: var(--primary-color) !important;
-}
-
-.bg-success {
-  background-color: var(--success-color) !important;
-}
-
-.bg-warning {
-  background-color: var(--warning-color) !important;
-}
-
-.bg-danger {
-  background-color: var(--error-color) !important;
-}
-
-/* Text colors */
-.text-primary {
-  color: var(--primary-color) !important;
-}
-
-.text-secondary {
-  color: var(--text-secondary) !important;
-}
-
-.text-success {
-  color: var(--success-color) !important;
-}
-
-.text-warning {
-  color: var(--warning-color) !important;
-}
-
-.text-danger {
-  color: var(--error-color) !important;
-}
+.text-primary { color: var(--primary-600) !important; }
+.text-secondary { color: var(--text-secondary) !important; }
+.text-success { color: var(--success) !important; }
+.text-warning { color: var(--warning) !important; }
+.text-danger { color: var(--danger) !important; }
 
 /* Borders */
 .border {
-  border-color: var(--border-color) !important;
+  border-color: var(--border-default) !important;
 }
-
 .border-primary {
-  border-color: var(--primary-color) !important;
+  border-color: var(--primary-600) !important;
 }
 
-/* Shadows */
-.shadow {
-  box-shadow: 0 0.125rem 0.25rem var(--shadow-color) !important;
+/* Alerts */
+.alert {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  color: var(--text-primary);
+}
+.alert-success {
+  background-color: var(--success);
+  color: white;
+  border-color: var(--success-dark);
+}
+.alert-warning {
+  background-color: var(--warning);
+  color: white;
+  border-color: var(--warning-dark);
+}
+.alert-danger {
+  background-color: var(--danger);
+  color: white;
+  border-color: var(--danger-dark);
 }
 
-.shadow-sm {
-  box-shadow: 0 0.125rem 0.25rem var(--shadow-color) !important;
-}
-
-/* Chatbot specific theme */
+/* Chatbot */
 .chatbot-messages {
-  background-color: var(--surface-color);
+  background-color: var(--bg-secondary);
 }
-
 .message.bot .message-content {
-  background-color: var(--background-color);
-  border-color: var(--border-color);
-  color: var(--text-color);
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  color: var(--text-primary);
 }
-
 .message.user .message-content {
-  background-color: var(--primary-color);
+  background-color: var(--primary-600);
   color: white;
 }
-
 .suggested-questions {
-  background: linear-gradient(135deg, var(--surface-color) 0%, var(--border-color) 100%);
-  border-color: var(--border-color);
+  background: linear-gradient(135deg, var(--bg-surface), var(--bg-tertiary));
+  border-color: var(--border-default);
 }
-
 .suggestion-btn {
-  background-color: var(--background-color);
-  border-color: var(--border-color);
-  color: var(--text-color);
+  background-color: var(--bg-surface);
+  border-color: var(--border-default);
+  color: var(--text-primary);
 }
-
 .suggestion-btn:hover {
-  background-color: var(--primary-color);
-  border-color: var(--primary-color);
+  background-color: var(--primary-600);
+  border-color: var(--primary-600);
   color: white;
 }
 
 /* Auth pages */
 .auth-container {
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+  background: linear-gradient(135deg, var(--primary-600), var(--primary-800));
 }
-
 .auth-info {
-  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 100%);
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
 }
 
-/* Smooth transitions */
+/* Utility classes */
+.shadow-sm { box-shadow: var(--shadow-sm); }
+.shadow-md { box-shadow: var(--shadow-md); }
+.shadow-lg { box-shadow: var(--shadow-lg); }
+.shadow-xl { box-shadow: var(--shadow-xl); }
+
+/* Smooth transitions on all themeable properties */
 * {
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
 }

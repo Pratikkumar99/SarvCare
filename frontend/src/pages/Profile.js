@@ -30,19 +30,13 @@ const Profile = ({ user, setUser }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        
-        // Simulate API call
         await new Promise(resolve => setTimeout(resolve, 500));
-        
-        // Update user in localStorage and state
         const updatedUser = { ...user, name: formData.name, email: formData.email };
         localStorage.setItem('user', JSON.stringify(updatedUser));
         setUser(updatedUser);
-        
         setMessage('Profile updated successfully!');
         setIsEditing(false);
         setLoading(false);
-        
         setTimeout(() => setMessage(''), 3000);
     };
 
@@ -55,23 +49,13 @@ const Profile = ({ user, setUser }) => {
         window.location.reload();
     };
 
-    const getRoleIcon = (role) => {
+    const getRoleLabel = (role) => {
         switch (role) {
-            case 'admin': return '⚙️';
-            case 'doctor': return '👨‍⚕️';
-            case 'insurance': return '📋';
-            case 'patient': return '🏥';
-            default: return '👤';
-        }
-    };
-
-    const getRoleColor = (role) => {
-        switch (role) {
-            case 'admin': return '#e53e3e';
-            case 'doctor': return '#38a169';
-            case 'insurance': return '#dd6b20';
-            case 'patient': return '#3182ce';
-            default: return '#718096';
+            case 'admin': return 'Administrator';
+            case 'doctor': return 'Doctor';
+            case 'insurance': return 'Insurance Staff';
+            case 'patient': return 'Patient';
+            default: return 'User';
         }
     };
 
@@ -84,15 +68,14 @@ const Profile = ({ user, setUser }) => {
                 <div className="profile-actions">
                     <button 
                         type="button" 
-                        className="btn btn-warning btn-sm"
+                        className="btn-clear"
                         onClick={clearLocalStorage}
-                        title="Clear all localStorage data"
                     >
-                        🗑️ Clear Data
+                        Clear Data
                     </button>
                     <button 
                         type="button" 
-                        className={`btn ${isEditing ? 'btn-secondary' : 'btn-primary'}`}
+                        className={`btn-edit ${isEditing ? 'cancel' : 'edit'}`}
                         onClick={() => setIsEditing(!isEditing)}
                     >
                         {isEditing ? 'Cancel' : 'Edit Profile'}
@@ -101,27 +84,21 @@ const Profile = ({ user, setUser }) => {
             </div>
 
             {message && (
-                <div className="alert alert-success" role="alert">
+                <div className="alert alert-success">
                     {message}
                 </div>
             )}
 
             <div className="profile-card">
-                {/* Profile Header Card */}
+                {/* Profile Header */}
                 <div className="profile-hero">
-                    <div 
-                        className="profile-avatar"
-                        style={{ backgroundColor: getRoleColor(user.role) }}
-                    >
+                    <div className="profile-avatar">
                         <span className="avatar-letter">{user.name?.charAt(0).toUpperCase()}</span>
                     </div>
                     <div className="profile-info">
                         <h3>{user.name}</h3>
-                        <span 
-                            className="profile-role-badge"
-                            style={{ backgroundColor: getRoleColor(user.role) + '20' }}
-                        >
-                            {user.role?.toUpperCase()}
+                        <span className="profile-role-badge">
+                            {getRoleLabel(user.role)}
                         </span>
                         <p className="profile-email">{user.email}</p>
                         {user.abha_id && (
@@ -208,8 +185,7 @@ const Profile = ({ user, setUser }) => {
                             <div className="form-group">
                                 <label>Role</label>
                                 <p className="form-value role-value">
-                                    <span className="role-dot" style={{ backgroundColor: getRoleColor(user.role) }}></span>
-                                    {user.role?.charAt(0).toUpperCase() + user.role?.slice(1)}
+                                    {getRoleLabel(user.role)}
                                 </p>
                             </div>
                         </div>
@@ -252,19 +228,10 @@ const Profile = ({ user, setUser }) => {
 
                     {isEditing && (
                         <div className="form-actions">
-                            <button 
-                                type="submit" 
-                                className="btn btn-primary"
-                                disabled={loading}
-                            >
+                            <button type="submit" className="btn-save" disabled={loading}>
                                 {loading ? 'Saving...' : 'Save Changes'}
                             </button>
-                            <button 
-                                type="button" 
-                                className="btn btn-secondary"
-                                onClick={() => setIsEditing(false)}
-                                disabled={loading}
-                            >
+                            <button type="button" className="btn-cancel" onClick={() => setIsEditing(false)} disabled={loading}>
                                 Cancel
                             </button>
                         </div>
@@ -307,7 +274,7 @@ const Profile = ({ user, setUser }) => {
                                 <h5>Change Password</h5>
                                 <p>Update your account password</p>
                             </div>
-                            <button className="btn btn-outline-danger btn-sm">
+                            <button className="btn-outline-danger">
                                 Change Password
                             </button>
                         </div>
@@ -317,7 +284,7 @@ const Profile = ({ user, setUser }) => {
                                 <p>Sign out of your account</p>
                             </div>
                             <button 
-                                className="btn btn-outline-danger btn-sm"
+                                className="btn-outline-danger"
                                 onClick={() => {
                                     localStorage.removeItem('user');
                                     setUser(null);
