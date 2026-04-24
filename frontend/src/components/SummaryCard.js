@@ -3,7 +3,7 @@ import React from 'react';
 const SummaryCard = ({ summary }) => {
     if (!summary) {
         return (
-            <div className="card shadow-sm border-0">
+            <div className="card-modern">
                 <div className="card-body text-center text-muted py-5">
                     <div className="mb-3">📋</div>
                     <p>No summary available for this patient.</p>
@@ -13,7 +13,7 @@ const SummaryCard = ({ summary }) => {
     }
 
     return (
-        <div className="card shadow-sm border-0">
+        <div className="card-modern">
             <div className="card-header bg-primary text-white">
                 <h5 className="mb-0">Patient Summary Report</h5>
             </div>

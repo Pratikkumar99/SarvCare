@@ -3,7 +3,7 @@
 }
 
 main {
-  background-color: #f8f9fa;
+  background-color: var(--surface-color);
 }
 
 @media (max-width: 768px) {

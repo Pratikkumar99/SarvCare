@@ -1,0 +1,33 @@
+.sidebar {
+    background: var(--bg-primary) !important;
+    border-right: 1px solid var(--border-light);
+    transition: all var(--transition-default);
+}
+
+.sidebar .nav-link {
+    transition: all var(--transition-fast);
+    border-radius: var(--radius-default);
+    margin-bottom: 0.25rem;
+    color: var(--text-primary);
+}
+
+.sidebar .nav-link:hover {
+    background: var(--bg-secondary);
+    transform: translateX(4px);
+}
+
+.sidebar .nav-link.active {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: white !important;
+    box-shadow: var(--shadow-sm);
+}
+
+.sidebar .nav-link.active:hover {
+    transform: translateX(0);
+}
+
+.sidebar h6 {
+    color: var(--text-secondary);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}

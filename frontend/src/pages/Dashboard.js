@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { patientAPI, insuranceAPI } from '../services/api';
 import PatientCard from '../components/PatientCard';
 import ClaimCard from '../components/ClaimCard';
+import SkeletonCard from '../components/SkeletonCard';
+import '../styles/Dashboard.css';
 
 const Dashboard = ({ user }) => {
     const [stats, setStats] = useState({
@@ -61,107 +63,115 @@ const Dashboard = ({ user }) => {
     }
 
     return (
-        <div>
-            <div className="d-flex justify-content-between align-items-center mb-4">
-                <h2 className="mb-0">Dashboard Overview</h2>
-                <span className="text-muted">Welcome back, {user?.name}</span>
+        <div className="dashboard-container">
+            {/* Header */}
+            <div className="dashboard-header">
+                <div className="dashboard-header-content">
+                    <h1>Welcome back, {user?.name}!</h1>
+                    <p>Here's your healthcare management overview</p>
+                </div>
+                <div className="dashboard-actions">
+                    <button className="btn-gradient">Generate Report</button>
+                </div>
             </div>
 
             {/* Stats Cards */}
-            <div className="row g-4 mb-4">
-                <div className="col-md-3">
-                    <div className="card bg-primary text-white border-0">
-                        <div className="card-body">
-                            <div className="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h6 className="text-white-50 mb-1">Total Patients</h6>
-                                    <h3 className="mb-0">{stats.totalPatients}</h3>
-                                </div>
-                                <div className="display-6">🏥</div>
-                            </div>
+            <div className="stats-grid">
+                <div className="stat-card">
+                    <div className="stat-content">
+                        <div className="stat-info">
+                            <h3>{stats.totalPatients}</h3>
+                            <p>Total Patients</p>
                         </div>
+                        <div className="stat-icon">👥</div>
                     </div>
                 </div>
-                <div className="col-md-3">
-                    <div className="card bg-success text-white border-0">
-                        <div className="card-body">
-                            <div className="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h6 className="text-white-50 mb-1">Total Claims</h6>
-                                    <h3 className="mb-0">{stats.totalClaims}</h3>
-                                </div>
-                                <div className="display-6">📋</div>
-                            </div>
+                <div className="stat-card success">
+                    <div className="stat-content">
+                        <div className="stat-info">
+                            <h3>{stats.totalClaims}</h3>
+                            <p>Total Claims</p>
                         </div>
+                        <div className="stat-icon">📋</div>
                     </div>
                 </div>
-                <div className="col-md-3">
-                    <div className="card bg-warning text-dark border-0">
-                        <div className="card-body">
-                            <div className="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h6 className="mb-1">Pending Claims</h6>
-                                    <h3 className="mb-0">{stats.pendingClaims}</h3>
-                                </div>
-                                <div className="display-6">⏳</div>
-                            </div>
+                <div className="stat-card warning">
+                    <div className="stat-content">
+                        <div className="stat-info">
+                            <h3>{stats.pendingClaims}</h3>
+                            <p>Pending Claims</p>
                         </div>
+                        <div className="stat-icon">⏳</div>
                     </div>
                 </div>
-                <div className="col-md-3">
-                    <div className="card bg-info text-white border-0">
-                        <div className="card-body">
-                            <div className="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h6 className="text-white-50 mb-1">Approved Claims</h6>
-                                    <h3 className="mb-0">{stats.approvedClaims}</h3>
-                                </div>
-                                <div className="display-6">✓</div>
-                            </div>
+                <div className="stat-card info">
+                    <div className="stat-content">
+                        <div className="stat-info">
+                            <h3>{stats.approvedClaims}</h3>
+                            <p>Approved Claims</p>
                         </div>
+                        <div className="stat-icon">✓</div>
                     </div>
                 </div>
             </div>
 
             {/* Recent Patients */}
-            <div className="mb-4">
-                <div className="d-flex justify-content-between align-items-center mb-3">
-                    <h4 className="mb-0">Recent Patients</h4>
-                    <a href="/patient" className="btn btn-sm btn-outline-primary">View All</a>
+            <div className="dashboard-section">
+                <div className="dashboard-section-header">
+                    <h3 className="dashboard-section-title">Recent Patients</h3>
                 </div>
-                <div className="row g-4">
-                    {recentPatients.map(patient => (
-                        <div className="col-md-4" key={patient.id}>
-                            <PatientCard patient={patient} />
-                        </div>
-                    ))}
-                    {recentPatients.length === 0 && (
-                        <div className="col-12">
-                            <div className="text-center text-muted py-5">
-                                <p>No patients found</p>
+                <div className="dashboard-section-body">
+                    {loading ? (
+                        <div className="loading-state">
+                            <div className="spinner-border text-primary" role="status">
+                                <span className="visually-hidden">Loading...</span>
                             </div>
+                        </div>
+                    ) : (
+                        <div className="card-grid">
+                            {recentPatients.map(patient => (
+                                <div className="col-md-4" key={patient.id}>
+                                    <PatientCard patient={patient} />
+                                </div>
+                            ))}
+                            {recentPatients.length === 0 && (
+                                <div className="empty-state">
+                                    <div className="empty-state-icon">👥</div>
+                                    <h3>No patients found</h3>
+                                    <p>No patients have been added to the system yet.</p>
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>
             </div>
 
             {/* Recent Claims */}
-            <div>
-                <div className="d-flex justify-content-between align-items-center mb-3">
-                    <h4 className="mb-0">Recent Claims</h4>
-                    <a href="/insurance" className="btn btn-sm btn-outline-primary">View All</a>
+            <div className="dashboard-section">
+                <div className="dashboard-section-header">
+                    <h3 className="dashboard-section-title">Recent Claims</h3>
                 </div>
-                <div className="row g-4">
-                    {recentClaims.map(claim => (
-                        <div className="col-md-4" key={claim.id}>
-                            <ClaimCard claim={claim} showActions={false} />
-                        </div>
-                    ))}
-                    {recentClaims.length === 0 && (
-                        <div className="col-12">
-                            <div className="text-center text-muted py-5">
-                                <p>No claims found</p>
+                <div className="dashboard-section-body">
+                    {loading ? (
+                        <div className="loading-state">
+                            <div className="spinner-border text-primary" role="status">
+                                <span className="visually-hidden">Loading...</span>
                             </div>
+                        </div>
+                    ) : (
+                        <div className="card-grid">
+                            {recentClaims.map(claim => (
+                                <div className="col-md-4" key={claim.id}>
+                                    <ClaimCard claim={claim} />
+                                </div>
+                            ))}
+                            {recentClaims.length === 0 && (
+                                <div className="empty-state">
+                                    <div className="empty-state-icon">📋</div>
+                                    <h3>No claims found</h3>
+                                    <p>No insurance claims have been submitted yet.</p>
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>

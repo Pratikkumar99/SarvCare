@@ -5,6 +5,8 @@ require('dotenv').config();
 const patientRoutes = require('./routes/patientRoutes');
 const doctorRoutes = require('./routes/doctorRoutes');
 const insuranceRoutes = require('./routes/insuranceRoutes');
+const authRoutes = require('./routes/authRoutes');
+const chatbotRoutes = require('./routes/chatbotRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -17,6 +19,8 @@ app.use(express.json());
 app.use('/api/patients', patientRoutes);
 app.use('/api/doctor', doctorRoutes);
 app.use('/api/insurance', insuranceRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/chatbot', chatbotRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
@@ -32,6 +36,7 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
     console.log(`🚀 SarvCare Server running on port ${PORT}`);
     console.log(`📡 API endpoints:`);
+    console.log(`   - Auth:      http://localhost:${PORT}/api/auth`);
     console.log(`   - Patients:  http://localhost:${PORT}/api/patients`);
     console.log(`   - Doctor:    http://localhost:${PORT}/api/doctor`);
     console.log(`   - Insurance: http://localhost:${PORT}/api/insurance`);

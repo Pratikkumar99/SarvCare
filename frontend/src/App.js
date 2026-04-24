@@ -1,15 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { ThemeProvider } from './contexts/ThemeContext';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
-import Login from './pages/Login';
-import Dashboard from './pages/Dashboard';
+import Chatbot from './components/Chatbot';
+import Login from './pages/Auth/Login';
+import Signup from './pages/Auth/Signup';
+import Dashboard from './pages/Dashboard/Dashboard';
 import PatientDashboard from './pages/PatientDashboard';
 import DoctorDashboard from './pages/DoctorDashboard';
 import InsuranceDashboard from './pages/InsuranceDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import SummaryPage from './pages/SummaryPage';
+import Profile from './pages/Profile';
 import './App.css';
+import './styles/theme.css';
+import './styles/Card.css';
+import './styles/Dashboard.css';
 
 const AppContent = ({ user, setUser }) => {
     const location = useLocation();
@@ -25,7 +32,7 @@ const AppContent = ({ user, setUser }) => {
 
     return (
         <div className="app-container">
-            {!isLoginPage && <Navbar userRole={user?.role} />}
+            {!isLoginPage && <Navbar userRole={user?.role} user={user} />}
             <div className="d-flex">
                 {!isLoginPage && <Sidebar userRole={user?.role} />}
                 <main className="flex-grow-1 p-4" style={{ minHeight: 'calc(100vh - 56px)', backgroundColor: '#f8f9fa' }}>
@@ -36,10 +43,12 @@ const AppContent = ({ user, setUser }) => {
                         <Route path="/insurance" element={<InsuranceDashboard user={user} />} />
                         <Route path="/admin" element={<AdminDashboard user={user} />} />
                         <Route path="/summary/:patientId" element={<SummaryPage user={user} />} />
+                        <Route path="/profile" element={<Profile user={user} setUser={setUser} />} />
                         <Route path="*" element={<Navigate to="/dashboard" replace />} />
                     </Routes>
                 </main>
             </div>
+            <Chatbot user={user} />
         </div>
     );
 };
@@ -55,12 +64,15 @@ function App() {
     }, []);
 
     return (
-        <Router>
-            <Routes>
-                <Route path="/login" element={<Login setUser={setUser} />} />
-                <Route path="/*" element={<AppContent user={user} setUser={setUser} />} />
-            </Routes>
-        </Router>
+        <ThemeProvider>
+            <Router>
+                <Routes>
+                    <Route path="/login" element={<Login setUser={setUser} />} />
+                    <Route path="/signup" element={<Signup setUser={setUser} />} />
+                    <Route path="/*" element={<AppContent user={user} setUser={setUser} />} />
+                </Routes>
+            </Router>
+        </ThemeProvider>
     );
 }
 

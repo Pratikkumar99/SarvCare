@@ -22,7 +22,7 @@ const SummaryPage = ({ user }) => {
             setLoading(true);
             setError('');
             
-            const response = await patientAPI.getById(patientId);
+            const response = await patientAPI.getById(patientId, user?.id, user?.role);
             if (response.data.success) {
                 setPatient(response.data.patient);
                 setSummary(response.data.patient.summaries?.[0] || null);
@@ -37,7 +37,7 @@ const SummaryPage = ({ user }) => {
 
     const fetchSummary = async () => {
         try {
-            const response = await patientAPI.getSummary(patientId);
+            const response = await patientAPI.getSummary(patientId, user?.id, user?.role);
             if (response.data.success) {
                 setSummary(response.data.summary);
             }

@@ -25,9 +25,9 @@ const InsuranceDashboard = ({ user }) => {
             setLoading(true);
             let claimsRes;
             if (activeTab === 'all') {
-                claimsRes = await insuranceAPI.getAllClaims();
+                claimsRes = await insuranceAPI.getAllClaims(user?.id, user?.role);
             } else {
-                claimsRes = await insuranceAPI.getClaimsByStatus(activeTab);
+                claimsRes = await insuranceAPI.getClaimsByStatus(activeTab, user?.id, user?.role);
             }
             setClaims(claimsRes.data.claims || []);
 
@@ -126,7 +126,7 @@ const InsuranceDashboard = ({ user }) => {
                 <div className="col-md-3">
                     <div className="card border-info">
                         <div className="card-body text-center">
-                            <h4 className="text-info mb-1">${parseFloat(stats.total_value || 0).toLocaleString()}</h4>
+                            <h4 className="text-info mb-1">₹{parseFloat(stats.total_value || 0).toLocaleString()}</h4>
                             <small className="text-muted">Total Value</small>
                         </div>
                     </div>

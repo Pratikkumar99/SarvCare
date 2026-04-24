@@ -1,61 +1,64 @@
 import React from 'react';
+import './ClaimCard.css';
 
 const ClaimCard = ({ claim, onUpdateStatus, showActions = true }) => {
-    const getStatusBadgeColor = (status) => {
-        switch (status) {
-            case 'approved': return 'bg-success';
-            case 'rejected': return 'bg-danger';
-            default: return 'bg-warning text-dark';
-        }
+    const getStatusBadge = (status) => {
+        const config = {
+            approved: { class: 'status-badge-approved', icon: '✓', text: 'Approved' },
+            rejected: { class: 'status-badge-rejected', icon: '✗', text: 'Rejected' },
+            pending: { class: 'status-badge-pending', icon: '⏳', text: 'Pending' }
+        };
+        const { class: badgeClass, icon, text } = config[status] || config.pending;
+        return { class: badgeClass, icon, text };
     };
 
-    const getAIRecommendationBadge = (recommendation) => {
+    const getAIRecommendation = (recommendation) => {
         if (!recommendation) return null;
         try {
             const parsed = typeof recommendation === 'string' ? JSON.parse(recommendation) : recommendation;
-            switch (parsed.recommendation) {
-                case 'APPROVE': return { color: 'bg-success', icon: '✓', text: 'AI: Approve' };
-                case 'FLAG': return { color: 'bg-warning text-dark', icon: '⚠', text: 'AI: Flag' };
-                default: return { color: 'bg-secondary', icon: '⏳', text: 'AI: Pending' };
-            }
+            const config = {
+                APPROVE: { class: 'ai-badge-approve', icon: '✓', text: 'AI Recommended Approve' },
+                FLAG: { class: 'ai-badge-flag', icon: '⚠', text: 'AI Flagged for Review' }
+            };
+            return config[parsed.recommendation] || { class: 'ai-badge-pending', icon: '⏳', text: 'AI Analysis Pending' };
         } catch {
             return null;
         }
     };
 
-    const aiBadge = getAIRecommendationBadge(claim.ai_recommendation);
+    const statusBadge = getStatusBadge(claim.status);
+    const aiBadge = getAIRecommendation(claim.ai_recommendation);
 
     return (
-        <div className="card h-100 shadow-sm border-0">
-            <div className="card-header bg-white border-bottom">
-                <div className="d-flex justify-content-between align-items-center">
-                    <span className={`badge ${getStatusBadgeColor(claim.status)}`}>
-                        {claim.status?.toUpperCase()}
+        <div className="card-modern h-100">
+            <div className="card-body">
+                <div className="claim-card-header">
+                    <span className={`status-badge ${statusBadge.class}`}>
+                        <span className="badge-icon">{statusBadge.icon}</span>
+                        {statusBadge.text}
                     </span>
                     {aiBadge && (
-                        <span className={`badge ${aiBadge.color}`}>
-                            {aiBadge.icon} {aiBadge.text}
+                        <span className={`ai-badge ${aiBadge.class}`}>
+                            <span className="badge-icon">{aiBadge.icon}</span>
+                            {aiBadge.text}
                         </span>
                     )}
                 </div>
-            </div>
-            <div className="card-body">
-                <h5 className="card-title">{claim.treatment}</h5>
-                <h6 className="card-subtitle mb-2 text-muted">{claim.patient_name}</h6>
-                
-                <p className="card-text text-muted" style={{ fontSize: '0.9rem' }}>
-                    {claim.description}
-                </p>
 
-                <div className="d-flex justify-content-between align-items-center mb-3">
-                    <span className="text-muted">Cost:</span>
-                    <span className="h5 mb-0 text-primary">${claim.cost}</span>
+                <h5 className="claim-title">{claim.treatment}</h5>
+                <p className="claim-patient">{claim.patient_name}</p>
+                
+                <p className="claim-description">{claim.description}</p>
+
+                <div className="claim-cost">
+                    <span className="cost-label">Amount</span>
+                    <span className="cost-value">${claim.cost}</span>
                 </div>
 
                 {claim.ai_recommendation && (
-                    <div className="alert alert-light border mb-3">
-                        <small className="text-muted d-block mb-1">AI Analysis:</small>
-                        <p className="mb-0" style={{ fontSize: '0.85rem' }}>
+                    <div className="ai-analysis">
+                        <span className="analysis-label">🤖 AI Analysis</span>
+                        <p className="analysis-text">
                             {typeof claim.ai_recommendation === 'string' 
                                 ? JSON.parse(claim.ai_recommendation).reason 
                                 : claim.ai_recommendation.reason}
@@ -64,23 +67,23 @@ const ClaimCard = ({ claim, onUpdateStatus, showActions = true }) => {
                 )}
 
                 {showActions && claim.status === 'pending' && (
-                    <div className="d-grid gap-2">
+                    <div className="claim-actions">
                         <button 
-                            className="btn btn-success btn-sm"
+                            className="btn-approve"
                             onClick={() => onUpdateStatus(claim.id, 'approved')}
                         >
-                            ✓ Approve
+                            ✓ Approve Claim
                         </button>
                         <button 
-                            className="btn btn-danger btn-sm"
+                            className="btn-reject"
                             onClick={() => onUpdateStatus(claim.id, 'rejected')}
                         >
-                            ✗ Reject
+                            ✗ Reject Claim
                         </button>
                     </div>
                 )}
             </div>
-            <div className="card-footer bg-light">
+            <div className="card-footer bg-transparent">
                 <small className="text-muted">
                     Submitted: {new Date(claim.created_at).toLocaleDateString()}
                 </small>

@@ -29,17 +29,50 @@ const mockAILogic = (treatment, patientHistory) => {
 };
 
 const patientController = {
-    // Get all patients
+    // Get all patients (filtered by user role)
     getAllPatients: async (req, res) => {
         try {
-            const query = `
-                SELECT p.id, p.age, p.gender, p.history, p.created_at,
-                       u.name, u.email
-                FROM patients p
-                JOIN users u ON p.user_id = u.id
-                ORDER BY p.id DESC
-            `;
-            const result = await pool.query(query);
+            const { userId, userRole } = req.query;
+            
+            let query;
+            let params = [];
+            
+            if (userRole === 'patient' && userId) {
+                // Patients see only their own record
+                query = `
+                    SELECT p.id, p.age, p.gender, p.history, p.created_at,
+                           u.name, u.email
+                    FROM patients p
+                    JOIN users u ON p.user_id = u.id
+                    WHERE p.user_id = $1
+                    ORDER BY p.id DESC
+                `;
+                params = [userId];
+            } else if (userRole === 'doctor' && userId) {
+                // Doctors see ALL patients so they can select and create prescriptions
+                query = `
+                    SELECT DISTINCT p.id, p.age, p.gender, p.history, p.created_at,
+                           u.name, u.email, u.abha_id,
+                           u.name, u.email,
+                           CASE WHEN pr.doctor_id = $1 THEN true ELSE false END as is_assigned
+                    FROM patients p
+                    JOIN users u ON p.user_id = u.id
+                    LEFT JOIN prescriptions pr ON p.id = pr.patient_id AND pr.doctor_id = $1
+                    ORDER BY is_assigned DESC, p.id DESC
+                `;
+                params = [userId];
+            } else {
+                // Admin/Insurance see all patients
+                query = `
+                    SELECT p.id, p.age, p.gender, p.history, p.created_at,
+                           u.name, u.email
+                    FROM patients p
+                    JOIN users u ON p.user_id = u.id
+                    ORDER BY p.id DESC
+                `;
+            }
+            
+            const result = await pool.query(query, params);
             res.json({ success: true, patients: result.rows });
         } catch (err) {
             console.error('Error fetching patients:', err);
@@ -47,25 +80,31 @@ const patientController = {
         }
     },
 
-    // Get single patient with details
+    // Get single patient with details (with permission check)
     getPatientById: async (req, res) => {
         try {
             const { id } = req.params;
+            const { userId, userRole } = req.query;
             
-            const patientQuery = `
-                SELECT p.id, p.age, p.gender, p.history, p.created_at,
-                       u.name, u.email
+            // First check if patient exists and get user_id
+            const patientCheckQuery = `
+                SELECT p.*, u.id as user_id, u.name, u.email
                 FROM patients p
                 JOIN users u ON p.user_id = u.id
                 WHERE p.id = $1
             `;
-            const patientResult = await pool.query(patientQuery, [id]);
+            const patientCheckResult = await pool.query(patientCheckQuery, [id]);
             
-            if (patientResult.rows.length === 0) {
+            if (patientCheckResult.rows.length === 0) {
                 return res.status(404).json({ success: false, error: 'Patient not found' });
             }
             
-            const patient = patientResult.rows[0];
+            const patient = patientCheckResult.rows[0];
+            
+            // Check permissions - patients can only view their own records
+            if (userRole === 'patient' && patient.user_id != userId) {
+                return res.status(403).json({ success: false, error: 'Access denied. You can only view your own records.' });
+            }
             
             // Get prescriptions
             const prescriptionsQuery = `
@@ -146,6 +185,16 @@ const patientController = {
     getPatientSummary: async (req, res) => {
         try {
             const { patientId } = req.params;
+            const { userId, userRole } = req.query;
+            
+            // Check permissions for patients
+            if (userRole === 'patient') {
+                const checkQuery = 'SELECT user_id FROM patients WHERE id = $1';
+                const checkResult = await pool.query(checkQuery, [patientId]);
+                if (checkResult.rows.length === 0 || checkResult.rows[0].user_id != userId) {
+                    return res.status(403).json({ success: false, error: 'Access denied' });
+                }
+            }
             
             const query = `
                 SELECT s.*, u.name as generated_by_name,
@@ -168,6 +217,43 @@ const patientController = {
             res.json({ success: true, summary: result.rows[0] });
         } catch (err) {
             console.error('Error fetching summary:', err);
+            res.status(500).json({ success: false, error: err.message });
+        }
+    },
+
+    // Search patient by ABHA ID
+    getPatientByAbhaId: async (req, res) => {
+        try {
+            const { abhaId } = req.params;
+            const { userId, userRole } = req.query;
+
+            const query = `
+                SELECT p.id, p.age, p.gender, p.history, p.created_at,
+                       u.id as user_id, u.name, u.email, u.abha_id
+                FROM patients p
+                JOIN users u ON p.user_id = u.id
+                WHERE u.abha_id = $1
+            `;
+            const result = await pool.query(query, [abhaId]);
+
+            if (result.rows.length === 0) {
+                return res.status(404).json({ success: false, error: 'Patient not found with this ABHA ID' });
+            }
+
+            // Check if doctor can access this patient
+            if (userRole === 'doctor' && userId) {
+                const checkQuery = `
+                    SELECT 1 FROM prescriptions 
+                    WHERE patient_id = $1 AND doctor_id = $2 
+                    LIMIT 1
+                `;
+                const checkResult = await pool.query(checkQuery, [result.rows[0].id, userId]);
+                result.rows[0].is_assigned = checkResult.rows.length > 0;
+            }
+
+            res.json({ success: true, patient: result.rows[0] });
+        } catch (err) {
+            console.error('Error searching by ABHA ID:', err);
             res.status(500).json({ success: false, error: err.message });
         }
     }

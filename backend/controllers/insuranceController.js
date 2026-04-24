@@ -56,17 +56,37 @@ const mockAILogic = (treatment, description, cost, patientHistory) => {
 };
 
 const insuranceController = {
-    // Get all claims
+    // Get all claims (filtered by user role)
     getAllClaims: async (req, res) => {
         try {
-            const query = `
-                SELECT c.*, u.name as patient_name, p.history as patient_history
-                FROM claims c
-                JOIN patients p ON c.patient_id = p.id
-                JOIN users u ON p.user_id = u.id
-                ORDER BY c.created_at DESC
-            `;
-            const result = await pool.query(query);
+            const { userId, userRole } = req.query;
+            
+            let query;
+            let params = [];
+            
+            if (userRole === 'patient' && userId) {
+                // Patients only see their own claims
+                query = `
+                    SELECT c.*, u.name as patient_name, p.history as patient_history
+                    FROM claims c
+                    JOIN patients p ON c.patient_id = p.id
+                    JOIN users u ON p.user_id = u.id
+                    WHERE p.user_id = $1
+                    ORDER BY c.created_at DESC
+                `;
+                params = [userId];
+            } else {
+                // Insurance, Admin, Doctor see all claims
+                query = `
+                    SELECT c.*, u.name as patient_name, p.history as patient_history
+                    FROM claims c
+                    JOIN patients p ON c.patient_id = p.id
+                    JOIN users u ON p.user_id = u.id
+                    ORDER BY c.created_at DESC
+                `;
+            }
+            
+            const result = await pool.query(query, params);
             res.json({ success: true, claims: result.rows });
         } catch (err) {
             console.error('Error fetching claims:', err);
@@ -74,20 +94,39 @@ const insuranceController = {
         }
     },
 
-    // Get claims by status
+    // Get claims by status (filtered by user role)
     getClaimsByStatus: async (req, res) => {
         try {
             const { status } = req.params;
+            const { userId, userRole } = req.query;
             
-            const query = `
-                SELECT c.*, u.name as patient_name, p.history as patient_history
-                FROM claims c
-                JOIN patients p ON c.patient_id = p.id
-                JOIN users u ON p.user_id = u.id
-                WHERE c.status = $1
-                ORDER BY c.created_at DESC
-            `;
-            const result = await pool.query(query, [status]);
+            let query;
+            let params = [status];
+            
+            if (userRole === 'patient' && userId) {
+                // Patients only see their own claims by status
+                query = `
+                    SELECT c.*, u.name as patient_name, p.history as patient_history
+                    FROM claims c
+                    JOIN patients p ON c.patient_id = p.id
+                    JOIN users u ON p.user_id = u.id
+                    WHERE c.status = $1 AND p.user_id = $2
+                    ORDER BY c.created_at DESC
+                `;
+                params = [status, userId];
+            } else {
+                // Insurance, Admin, Doctor see all claims by status
+                query = `
+                    SELECT c.*, u.name as patient_name, p.history as patient_history
+                    FROM claims c
+                    JOIN patients p ON c.patient_id = p.id
+                    JOIN users u ON p.user_id = u.id
+                    WHERE c.status = $1
+                    ORDER BY c.created_at DESC
+                `;
+            }
+            
+            const result = await pool.query(query, params);
             res.json({ success: true, claims: result.rows });
         } catch (err) {
             console.error('Error fetching claims:', err);
