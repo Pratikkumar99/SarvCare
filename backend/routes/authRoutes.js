@@ -17,7 +17,7 @@ router.post('/login', async (req, res) => {
 
         // Find user by email
         const result = await pool.query(
-            'SELECT id, name, email, age, password, role FROM users WHERE email = $1',
+            'SELECT id, name, email, password, role FROM users WHERE email = $1',
             [email]
         );
 
@@ -61,7 +61,7 @@ router.post('/login', async (req, res) => {
 // Register new user
 router.post('/register', async (req, res) => {
     try {
-        const { name, email, age, abhaId, password, role } = req.body;
+        const { name, email, abhaId, password, role } = req.body;
 
         if (!name || !email || !password || !role) {
             return res.status(400).json({ 
@@ -102,10 +102,10 @@ router.post('/register', async (req, res) => {
 
         // Insert new user
         const result = await pool.query(
-            `INSERT INTO users (name, email, age, abha_id, password, role)
-             VALUES ($1, $2, $3, $4, $5, $6)
-             RETURNING id, name, email, age, abha_id, role`,
-            [name, email, age || null, abhaId || null, hashedPassword, role]
+            `INSERT INTO users (name, email, abha_id, password, role)
+             VALUES ($1, $2, $3, $4, $5)
+             RETURNING id, name, email, abha_id, role`,
+            [name, email, abhaId || null, hashedPassword, role]
         );
 
         const newUser = result.rows[0];
@@ -113,9 +113,9 @@ router.post('/register', async (req, res) => {
         // If registering as patient, auto-create patient record
         if (role === 'patient') {
             await pool.query(
-                `INSERT INTO patients (user_id, age, gender, history)
-                 VALUES ($1, $2, $3, $4)`,
-                [newUser.id, age, 'Other', 'No medical history recorded yet']
+                `INSERT INTO patients (user_id, gender, history)
+                 VALUES ($1, $2, $3)`,
+                [newUser.id, 'Other', 'No medical history recorded yet']
             );
         }
 
