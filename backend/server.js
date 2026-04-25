@@ -43,6 +43,12 @@ app.use((err, req, res, next) => {
     res.status(500).json({ success: false, error: 'Something went wrong!' });
 });
 
+// Handle errors after all middleware and routes have been executed
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ success: false, error: 'Something went wrong!' });
+});
+
 app.listen(PORT, () => {
     console.log(`🚀 SarvCare Server running on port ${PORT}`);
     console.log(`📡 API endpoints:`);
