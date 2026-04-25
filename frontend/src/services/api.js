@@ -20,13 +20,14 @@ export const patientAPI = {
 
 // Doctor APIs
 export const doctorAPI = {
-    getPatients: () => api.get('/doctor/patients'),
+    getPatients: (doctorId) => api.get(`/doctor/patients?doctorId=${doctorId}`),
     createPrescription: (data) => api.post('/doctor/prescriptions', data),
     getPrescriptions: (doctorId) => api.get(`/doctor/prescriptions/${doctorId}`),
     createSummary: (data) => api.post('/doctor/summaries', data),
     uploadReport: (formData) => api.post('/doctor/reports', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
-    })
+    }),
+    getReports: (doctorId) => api.get(`/doctor/reports/${doctorId}`)
 };
 
 // Insurance APIs

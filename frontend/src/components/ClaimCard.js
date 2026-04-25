@@ -52,7 +52,7 @@ const ClaimCard = ({ claim, onUpdateStatus, showActions = true }) => {
 
                 <div className="claim-cost">
                     <span className="cost-label">Amount</span>
-                    <span className="cost-value">${claim.cost}</span>
+                    <span className="cost-value">₹{parseFloat(claim.cost || 0).toLocaleString('en-IN')}</span>
                 </div>
 
                 {claim.ai_recommendation && (

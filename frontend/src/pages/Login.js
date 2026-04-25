@@ -64,7 +64,6 @@ const Login = ({ setUser }) => {
                         <div className="card shadow-lg border-0">
                             <div className="card-body p-5">
                                 <div className="text-center mb-4">
-                                    <div className="display-4 mb-3">🏥</div>
                                     <h2 className="fw-bold">SarvCare</h2>
                                     <p className="text-muted">Healthcare Management System</p>
                                 </div>

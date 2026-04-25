@@ -69,6 +69,7 @@
   --border-default: var(--gray-200);
   --border-light: var(--gray-100);
   --text-primary: var(--gray-900);
+  --bg-formValue: var(--gray-100);
   --text-secondary: var(--gray-600);
   --text-muted: var(--gray-500);
   --shadow-color: rgba(0, 0, 0, 0.08);
@@ -79,6 +80,7 @@
    ============================================ */
 [data-theme="dark"] {
   --bg-body: var(--gray-900);
+  --bg-formValue: var(--gray-600);
   --bg-surface: var(--gray-800);
   --bg-elevated: var(--gray-700);
   --bg-secondary: var(--gray-800);

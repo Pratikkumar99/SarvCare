@@ -68,13 +68,6 @@ const Profile = ({ user, setUser }) => {
                 <div className="profile-actions">
                     <button 
                         type="button" 
-                        className="btn-clear"
-                        onClick={clearLocalStorage}
-                    >
-                        Clear Data
-                    </button>
-                    <button 
-                        type="button" 
                         className={`btn-edit ${isEditing ? 'cancel' : 'edit'}`}
                         onClick={() => setIsEditing(!isEditing)}
                     >
@@ -144,23 +137,6 @@ const Profile = ({ user, setUser }) => {
                                     />
                                 ) : (
                                     <p className="form-value">{formData.email}</p>
-                                )}
-                            </div>
-
-                            <div className="form-group">
-                                <label>Age</label>
-                                {isEditing ? (
-                                    <input
-                                        type="number"
-                                        name="age"
-                                        value={formData.age}
-                                        onChange={handleChange}
-                                        className="form-control"
-                                        min="1"
-                                        max="120"
-                                    />
-                                ) : (
-                                    <p className="form-value">{user?.age || 'Not provided'} years</p>
                                 )}
                             </div>
                         </div>
@@ -237,33 +213,6 @@ const Profile = ({ user, setUser }) => {
                         </div>
                     )}
                 </form>
-
-                {/* Account Stats */}
-                <div className="profile-stats">
-                    <h4>Account Statistics</h4>
-                    <div className="stats-row">
-                        <div className="stat-box">
-                            <span className="stat-number">{stats?.patientsSeen || 0}</span>
-                            <span className="stat-label">
-                                {user.role === 'patient' ? 'Total Visits' : 
-                                 user.role === 'doctor' ? 'Patients Seen' : 
-                                 user.role === 'insurance' ? 'Claims Processed' : 'System Users'}
-                            </span>
-                        </div>
-                        <div className="stat-box">
-                            <span className="stat-number">{stats?.prescriptions || 0}</span>
-                            <span className="stat-label">
-                                {user.role === 'patient' ? 'Prescriptions' : 
-                                 user.role === 'doctor' ? 'Prescriptions' : 
-                                 user.role === 'insurance' ? 'Approved' : 'Active Sessions'}
-                            </span>
-                        </div>
-                        <div className="stat-box">
-                            <span className="stat-number">{new Date().getFullYear()}</span>
-                            <span className="stat-label">Member Since</span>
-                        </div>
-                    </div>
-                </div>
 
                 {/* Danger Zone */}
                 <div className="danger-zone">

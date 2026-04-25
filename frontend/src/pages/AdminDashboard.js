@@ -78,7 +78,6 @@ const AdminDashboard = ({ user }) => {
                                     <h6 className="text-white-50 mb-1">Total Patients</h6>
                                     <h3 className="mb-0">{stats.patients}</h3>
                                 </div>
-                                <div className="display-6">🏥</div>
                             </div>
                         </div>
                     </div>
@@ -91,7 +90,6 @@ const AdminDashboard = ({ user }) => {
                                     <h6 className="text-white-50 mb-1">Total Claims</h6>
                                     <h3 className="mb-0">{stats.claims}</h3>
                                 </div>
-                                <div className="display-6">📋</div>
                             </div>
                         </div>
                     </div>
@@ -104,7 +102,6 @@ const AdminDashboard = ({ user }) => {
                                     <h6 className="mb-1">Pending Review</h6>
                                     <h3 className="mb-0">{stats.pendingClaims}</h3>
                                 </div>
-                                <div className="display-6">⏳</div>
                             </div>
                         </div>
                     </div>
@@ -117,7 +114,6 @@ const AdminDashboard = ({ user }) => {
                                     <h6 className="text-white-50 mb-1">System Status</h6>
                                     <h3 className="mb-0">✓</h3>
                                 </div>
-                                <div className="display-6">⚙️</div>
                             </div>
                         </div>
                     </div>
@@ -193,58 +189,6 @@ const AdminDashboard = ({ user }) => {
                 </div>
             </div>
 
-            {/* AI System Status */}
-            <div className="card">
-                <div className="card-header bg-white">
-                    <h5 className="mb-0">🤖 AI Prior Authorization System</h5>
-                </div>
-                <div className="card-body">
-                    <div className="row g-4">
-                        <div className="col-md-4">
-                            <div className="d-flex align-items-center">
-                                <div className="rounded-circle bg-success text-white d-flex align-items-center justify-content-center me-3" style={{ width: '40px', height: '40px' }}>
-                                    ✓
-                                </div>
-                                <div>
-                                    <h6 className="mb-0">Rule Engine</h6>
-                                    <small className="text-muted">Active</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-md-4">
-                            <div className="d-flex align-items-center">
-                                <div className="rounded-circle bg-success text-white d-flex align-items-center justify-content-center me-3" style={{ width: '40px', height: '40px' }}>
-                                    ✓
-                                </div>
-                                <div>
-                                    <h6 className="mb-0">Claim Analysis</h6>
-                                    <small className="text-muted">Processing</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-md-4">
-                            <div className="d-flex align-items-center">
-                                <div className="rounded-circle bg-success text-white d-flex align-items-center justify-content-center me-3" style={{ width: '40px', height: '40px' }}>
-                                    ✓
-                                </div>
-                                <div>
-                                    <h6 className="mb-0">Auto-Approval</h6>
-                                    <small className="text-muted">Enabled</small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="mt-4">
-                        <h6>AI Logic Rules:</h6>
-                        <ul className="list-unstyled text-muted">
-                            <li>✓ Chronic condition + Preventive care = Auto-Approve</li>
-                            <li>⚠ High-cost procedures without history = Flag for Review</li>
-                            <li>✓ Low-cost preventive care = Auto-Approve</li>
-                            <li>? Insufficient data = Manual Review</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
         </div>
     );
 };

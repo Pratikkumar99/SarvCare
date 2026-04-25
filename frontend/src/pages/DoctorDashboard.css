@@ -1,0 +1,426 @@
+/* DoctorDashboard.css – Sticky right column, scrollable left */
+
+.doctor-dashboard {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Button styles */
+.btn-primary {
+  background: var(--primary-500);
+  color: white;
+  border: none;
+  padding: 0.625rem 1.25rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  display: inline-block;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--primary-600);
+  transform: translateY(-1px);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
+  padding: 0.625rem 1.25rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: var(--bg-tertiary);
+  transform: translateY(-1px);
+}
+
+.btn-sm {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+/* Alert */
+.alert {
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  margin-top: 1rem;
+  border: 1px solid;
+}
+
+.alert-success {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--success);
+  border-color: rgba(16, 185, 129, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* Search form */
+.search-form {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0;
+}
+
+.search-form .form-control {
+  flex: 1;
+}
+
+/* Two columns layout */
+.dashboard-two-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+  align-items: start;
+}
+
+/* Left column - scrollable */
+.left-column {
+  max-height: calc(100vh - 280px);
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+/* Right column - sticky */
+.right-column {
+  position: sticky;
+  top: 80px;
+  align-self: start;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+}
+
+/* Optional: add subtle scrollbar */
+.left-column::-webkit-scrollbar,
+.right-column::-webkit-scrollbar {
+  width: 6px;
+}
+.left-column::-webkit-scrollbar-track,
+.right-column::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+  border-radius: 3px;
+}
+.left-column::-webkit-scrollbar-thumb,
+.right-column::-webkit-scrollbar-thumb {
+  background: var(--border-default);
+  border-radius: 3px;
+}
+
+/* Patient list */
+.patient-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.patient-list-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem;
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.patient-list-item:hover {
+  background: var(--bg-secondary);
+  transform: translateX(4px);
+}
+
+.patient-list-item.active {
+  background: var(--primary-500);
+  border-color: var(--primary-500);
+}
+
+.patient-list-item.active .patient-info h4,
+.patient-list-item.active .patient-info span {
+  color: white;
+}
+
+.patient-list-item.active .patient-avatar-small {
+  background: white;
+  color: var(--primary-500);
+}
+
+.patient-avatar-small {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--primary-500);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.125rem;
+  flex-shrink: 0;
+}
+
+.patient-info h4 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.patient-info span {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* Prescription list */
+.prescription-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.prescription-list-item {
+  padding: 0.75rem;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--primary-500);
+}
+
+.prescription-item-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+/* Patient detail panel */
+.patient-detail-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-default);
+}
+
+.patient-detail-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.patient-detail-info {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+}
+
+.patient-detail-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.patient-detail-actions button {
+  width: 100%;
+  justify-content: center;
+}
+
+.patient-detail-section {
+  margin-top: 1.5rem;
+}
+
+.patient-detail-section h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: var(--text-primary);
+}
+
+/* Claim items */
+.claim-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  margin-bottom: 0.5rem;
+}
+
+.claim-status-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+}
+
+.claim-item.status-approved .claim-status-badge {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--success);
+}
+.claim-item.status-pending .claim-status-badge {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--warning);
+}
+.claim-item.status-rejected .claim-status-badge {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--danger);
+}
+
+/* Badge */
+.badge-info {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  background: var(--info);
+  color: white;
+  border-radius: var(--radius-sm);
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-muted);
+}
+
+/* Modal styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+}
+
+.modal-container {
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-xl);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border-default);
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--text-muted);
+  transition: var(--transition);
+}
+
+.modal-close:hover {
+  color: var(--text-primary);
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--border-default);
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  transition: var(--transition);
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--primary-500);
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .dashboard-two-columns {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .left-column,
+  .right-column {
+    max-height: none;
+    overflow-y: visible;
+    position: static;
+  }
+  .right-column {
+    position: static;
+  }
+  .search-form {
+    flex-direction: column;
+  }
+}

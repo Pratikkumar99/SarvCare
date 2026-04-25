@@ -64,7 +64,7 @@ const Dashboard = ({ user }) => {
                     <p>Here's your healthcare management overview</p>
                 </div>
                 <div className="dashboard-actions">
-                    <button className="btn-primary">📊 Generate Report</button>
+                    <button className="btn-primary">Generate Report</button>
                 </div>
             </div>
 
@@ -76,8 +76,7 @@ const Dashboard = ({ user }) => {
                             <h3>{stats.totalPatients}</h3>
                             <p>Total Patients</p>
                         </div>
-                        <div className="stat-icon">👥</div>
-                    </div>
+                                            </div>
                 </div>
                 <div className="stat-card success">
                     <div className="stat-content">
@@ -85,8 +84,7 @@ const Dashboard = ({ user }) => {
                             <h3>{stats.totalClaims}</h3>
                             <p>Total Claims</p>
                         </div>
-                        <div className="stat-icon">📋</div>
-                    </div>
+                                            </div>
                 </div>
                 <div className="stat-card warning">
                     <div className="stat-content">
@@ -94,7 +92,6 @@ const Dashboard = ({ user }) => {
                             <h3>{stats.pendingClaims}</h3>
                             <p>Pending Claims</p>
                         </div>
-                        <div className="stat-icon">⏳</div>
                     </div>
                 </div>
                 <div className="stat-card info">
@@ -103,7 +100,6 @@ const Dashboard = ({ user }) => {
                             <h3>{stats.approvedClaims}</h3>
                             <p>Approved Claims</p>
                         </div>
-                        <div className="stat-icon">✓</div>
                     </div>
                 </div>
             </div>
@@ -122,8 +118,7 @@ const Dashboard = ({ user }) => {
                         </div>
                     ) : (
                         <div className="empty-state">
-                            <div className="empty-state-icon">👥</div>
-                            <h3>No patients found</h3>
+                                                        <h3>No patients found</h3>
                             <p>No patients have been added to the system yet.</p>
                         </div>
                     )}
@@ -144,8 +139,7 @@ const Dashboard = ({ user }) => {
                         </div>
                     ) : (
                         <div className="empty-state">
-                            <div className="empty-state-icon">📋</div>
-                            <h3>No claims found</h3>
+                                                        <h3>No claims found</h3>
                             <p>No insurance claims have been submitted yet.</p>
                         </div>
                     )}

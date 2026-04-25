@@ -17,9 +17,9 @@ const Signup = ({ setUser }) => {
     const [loading, setLoading] = useState(false);
 
     const roles = [
-        { value: 'patient', label: 'Patient', icon: '🏥', desc: 'Access your medical records' },
-        { value: 'doctor', label: 'Doctor', icon: '👨‍⚕️', desc: 'Manage patients & prescriptions' },
-        { value: 'insurance', label: 'Insurance', icon: '📋', desc: 'Process claims & approvals' },
+        { value: 'patient', label: 'Patient', desc: 'Access your medical records' },
+        { value: 'doctor', label: 'Doctor', desc: 'Manage patients & prescriptions' },
+        { value: 'insurance', label: 'Insurance', desc: 'Process claims & approvals' },
     ];
 
     const handleSubmit = async (e) => {
@@ -52,7 +52,17 @@ const Signup = ({ setUser }) => {
             const userData = response.data.user;
             localStorage.setItem('user', JSON.stringify(userData));
             setUser(userData);
-            navigate('/dashboard');
+            
+            // Redirect based on user role
+            if (userData.role === 'insurance') {
+                navigate('/insurance');
+            } else if (userData.role === 'doctor') {
+                navigate('/doctor');
+            } else if (userData.role === 'admin') {
+                navigate('/admin');
+            } else {
+                navigate('/dashboard'); // patient or default
+            }
         } catch (err) {
             setError(err.response?.data?.message || 'Registration failed. Please try again.');
             setLoading(false);
@@ -143,7 +153,6 @@ const Signup = ({ setUser }) => {
                                     className={`role-card ${formData.role === role.value ? 'active' : ''}`}
                                     onClick={() => setFormData({...formData, role: role.value})}
                                 >
-                                    <span className="role-icon">{role.icon}</span>
                                     <span className="role-label">{role.label}</span>
                                     <small className="role-desc">{role.desc}</small>
                                 </div>

@@ -8,10 +8,9 @@ const Sidebar = ({ userRole }) => {
   const isActive = (path) => location.pathname === path;
 
   const menuItems = [
-    { path: '/dashboard', label: 'Dashboard', roles: ['patient', 'doctor', 'insurance', 'admin'] },
-    { path: '/patient', label: 'Patient Records', roles: ['patient', 'doctor', 'admin'] },
+    { path: '/dashboard', label: 'Dashboard', roles: ['patient', 'doctor', 'admin'] },
     { path: '/doctor', label: 'Doctor Portal', roles: ['doctor', 'admin'] },
-    { path: '/insurance', label: 'Insurance Claims', roles: ['insurance', 'admin'] },
+    { path: '/insurance', label: 'Insurance Portal', roles: ['insurance', 'admin'] },
     { path: '/admin', label: 'Admin Panel', roles: ['admin'] },
   ];
 
@@ -51,9 +50,11 @@ const Sidebar = ({ userRole }) => {
                 <Link to="/insurance" className="sidebar-link">Review Claims</Link>
               </li>
             )}
-            <li>
-              <Link to="/dashboard" className="sidebar-link">View Reports</Link>
-            </li>
+            {userRole !== 'insurance' && (
+              <li>
+                <Link to="/dashboard" className="sidebar-link">View Reports</Link>
+              </li>
+            )}
           </ul>
         </div>
       </div>

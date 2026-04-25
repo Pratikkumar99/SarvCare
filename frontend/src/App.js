@@ -30,11 +30,15 @@ const AppContent = ({ user, setUser }) => {
         return <Login setUser={setUser} />;
     }
 
+    // Roles that should not have sidebar
+    const noSidebarRoles = ['patient', 'insurance'];
+    const shouldShowSidebar = !isLoginPage && !noSidebarRoles.includes(user?.role);
+
     return (
         <div className="app-container">
             {!isLoginPage && <Navbar userRole={user?.role} user={user} />}
             <div className="d-flex">
-                {!isLoginPage && <Sidebar userRole={user?.role} />}
+                {shouldShowSidebar && <Sidebar userRole={user?.role} />}
                 <main className="flex-grow-1 p-4" style={{ minHeight: 'calc(100vh - 56px)', backgroundColor: 'var(--bg-body)' }}>
                     <Routes>
                         <Route path="/dashboard" element={<Dashboard user={user} />} />

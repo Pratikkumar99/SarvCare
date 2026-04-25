@@ -41,10 +41,7 @@ const PatientCard = ({ patient }) => {
                     View Summary Report →
                 </Link>
             </div>
-            <div className="card-footer bg-transparent">
-                <small className="patient-id">Patient ID: #{patient.id}</small>
-            </div>
-        </div>
+                    </div>
     );
 };
 

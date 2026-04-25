@@ -53,6 +53,18 @@ const initDatabase = async () => {
                 generated_by INTEGER REFERENCES users(id) ON DELETE SET NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
+
+            CREATE TABLE IF NOT EXISTS reports (
+                id SERIAL PRIMARY KEY,
+                patient_id INTEGER REFERENCES patients(id) ON DELETE CASCADE,
+                doctor_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+                report_title VARCHAR(255) NOT NULL,
+                report_type VARCHAR(100) DEFAULT 'Medical Report',
+                description TEXT,
+                file_url VARCHAR(500),
+                uploaded_by_name VARCHAR(255),
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
         `);
 
         console.log('Tables created successfully');

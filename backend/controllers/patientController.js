@@ -134,13 +134,24 @@ const patientController = {
             `;
             const summariesResult = await pool.query(summariesQuery, [id]);
             
+            // Get reports
+            const reportsQuery = `
+                SELECT r.*, u.name as uploaded_by_name
+                FROM reports r
+                JOIN users u ON r.doctor_id = u.id
+                WHERE r.patient_id = $1
+                ORDER BY r.created_at DESC
+            `;
+            const reportsResult = await pool.query(reportsQuery, [id]);
+            
             res.json({
                 success: true,
                 patient: {
                     ...patient,
                     prescriptions: prescriptionsResult.rows,
                     claims: claimsResult.rows,
-                    summaries: summariesResult.rows
+                    summaries: summariesResult.rows,
+                    reports: reportsResult.rows
                 }
             });
         } catch (err) {

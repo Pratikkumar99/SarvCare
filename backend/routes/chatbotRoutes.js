@@ -14,89 +14,87 @@ router.post('/chat', async (req, res) => {
         }
 
         // System prompt for healthcare assistant with strict restrictions
-        const systemPrompt = `You are SarvCare AI Assistant, a professional healthcare information provider. 
+        const systemPrompt = `You are a helpful healthcare assistant for SarvCare Healthcare Management System. 
+You provide general health information and guidance but never give medical diagnoses or specific treatments.
+Always include a disclaimer that users should consult healthcare professionals for medical advice.
 
-STRICT GUIDELINES:
-1. NEVER provide medical diagnoses or prescribe treatments
-2. ALWAYS encourage users to consult healthcare professionals for medical concerns
-3. Provide general health information and educational content only
-4. If user asks for diagnosis, say "I cannot provide medical diagnoses. Please consult a qualified healthcare provider."
-5. If user asks for prescriptions, say "I cannot prescribe medications. Please consult a licensed healthcare provider."
-6. Be helpful, professional, and empathetic
-7. Provide accurate general health information
-8. Suggest when to seek emergency care for serious symptoms
-
-User Context: ${userContext ? `Role: ${userContext.role}, Name: ${userContext.name}` : 'Unknown user'}
+User context: ${userContext || 'General patient'}
 
 Respond professionally and helpfully within these guidelines.`;
 
-        // Call Ollama API
-        const ollamaResponse = await fetch('http://localhost:11434/api/generate', {
+        // Call Google Gemini API (Free)
+        const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${process.env.GEMINI_API_KEY}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                model: 'phi3',
-                prompt: `${systemPrompt}\n\nUser: ${message}\n\nAssistant:`,
-                stream: false,
-                options: {
+                contents: [{
+                    parts: [{
+                        text: systemPrompt + '\n\nUser: ' + message
+                    }]
+                }],
+                generationConfig: {
                     temperature: 0.7,
-                    max_tokens: 500
+                    topK: 40,
+                    topP: 0.95,
+                    maxOutputTokens: 1024,
                 }
             })
         });
 
-        if (!ollamaResponse.ok) {
-            throw new Error('Ollama service unavailable');
+        if (!geminiResponse.ok) {
+            throw new Error('Gemini API unavailable');
         }
 
-        const ollamaData = await ollamaResponse.json();
+        const geminiData = await geminiResponse.json();
+        const response = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || 
+                        'I apologize, but I couldn\'t process your request at the moment.';
         
         res.json({
             success: true,
-            response: ollamaData.response,
+            response: response,
             timestamp: new Date().toISOString()
         });
 
     } catch (error) {
         console.error('Chatbot error:', error);
         
-        // Fallback response when Ollama is unavailable
+        // Fallback response when API is unavailable
         const fallbackResponse = `I'm SarvCare AI Assistant. I can help you with general health information, but I cannot provide medical diagnoses or treatments. 
 
 For any medical concerns, please consult a qualified healthcare provider.
 
-How can I help you with general health information today?`;
-
+How can I assist you with healthcare information today?`;
+        
         res.json({
             success: true,
             response: fallbackResponse,
-            fallback: true,
             timestamp: new Date().toISOString()
         });
     }
 });
 
-// Check Ollama service status
+// Check Gemini API status
 router.get('/status', async (req, res) => {
     try {
-        const response = await fetch('http://localhost:11434/api/tags');
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${process.env.GEMINI_API_KEY}`);
         if (response.ok) {
             const data = await response.json();
             res.json({
                 success: true,
                 status: 'online',
-                models: data.models
+                service: 'Google Gemini API',
+                models: data.models?.map(m => m.name) || []
             });
         } else {
-            throw new Error('Ollama not responding');
+            throw new Error('Gemini API not responding');
         }
     } catch (error) {
         res.json({
             success: false,
             status: 'offline',
-            message: 'Ollama service is not available'
+            message: 'Gemini API service is not available'
         });
     }
 });
