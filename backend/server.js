@@ -16,7 +16,7 @@ app.use(cors({
     origin: [
         process.env.FRONTEND_URL,
         'http://localhost:3000',
-        'https://your-frontend-name.onrender.com'
+        'https://sarvcare.onrender.com'
     ],
     credentials: true
 }));
