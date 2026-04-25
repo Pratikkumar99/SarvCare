@@ -3,6 +3,8 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const pool = require('../models/db');
 
+// Fixed database schema issues - removed age column references
+
 // Login user
 router.post('/login', async (req, res) => {
     try {
