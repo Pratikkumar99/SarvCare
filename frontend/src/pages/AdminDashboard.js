@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { patientAPI, doctorAPI, insuranceAPI } from '../services/api';
+import { patientAPI, insuranceAPI } from '../services/api';
 
 const AdminDashboard = ({ user }) => {
     const [stats, setStats] = useState({

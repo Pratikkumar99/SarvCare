@@ -1,5 +1,5 @@
 ﻿import React, { useEffect, useState, useCallback } from "react";
-import { patientAPI, API_URL } from "../services/api";
+import { patientAPI } from "../services/api";
 import "../styles/Dashboard.css";
 
 const PatientDashboard = ({ user }) => {
