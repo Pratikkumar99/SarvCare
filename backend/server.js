@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
+// Backend deployed on Render - Database connection fix
+
 const patientRoutes = require('./routes/patientRoutes');
 const doctorRoutes = require('./routes/doctorRoutes');
 const insuranceRoutes = require('./routes/insuranceRoutes');
