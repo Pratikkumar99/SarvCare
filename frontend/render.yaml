@@ -11,4 +11,4 @@ services:
         destination: /index.html
     envVars:
       - key: REACT_APP_API_URL
-        value: https://your-backend-name.onrender.com
+        value: https://sarvcare-backend.onrender.com/api

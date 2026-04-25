@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-// Ollama Phi-3 integration for healthcare chatbot
+// AI Chatbot integration - supports both Ollama (local) and Gemini (cloud)
 router.post('/chat', async (req, res) => {
     try {
         const { message, userContext } = req.body;
@@ -13,7 +13,7 @@ router.post('/chat', async (req, res) => {
             });
         }
 
-        // System prompt for healthcare assistant with strict restrictions
+        // System prompt for healthcare assistant
         const systemPrompt = `You are a helpful healthcare assistant for SarvCare Healthcare Management System. 
 You provide general health information and guidance but never give medical diagnoses or specific treatments.
 Always include a disclaimer that users should consult healthcare professionals for medical advice.
@@ -22,38 +22,70 @@ User context: ${userContext || 'General patient'}
 
 Respond professionally and helpfully within these guidelines.`;
 
-        // Call Google Gemini API (Free)
-        const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${process.env.GEMINI_API_KEY}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                contents: [{
-                    parts: [{
-                        text: systemPrompt + '\n\nUser: ' + message
-                    }]
-                }],
-                generationConfig: {
-                    temperature: 0.7,
-                    topK: 40,
-                    topP: 0.95,
-                    maxOutputTokens: 1024,
-                }
-            })
-        });
+        let response;
 
-        if (!geminiResponse.ok) {
-            throw new Error('Gemini API unavailable');
+        // Check if using Ollama for local development
+        if (process.env.NODE_ENV === 'development' && process.env.USE_OLLAMA === 'true') {
+            try {
+                // Use Ollama for local development
+                const ollamaResponse = await fetch('http://localhost:11434/api/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        model: 'phi3',
+                        prompt: systemPrompt + '\n\nUser: ' + message,
+                        stream: false
+                    })
+                });
+
+                if (ollamaResponse.ok) {
+                    const ollamaData = await ollamaResponse.json();
+                    response = ollamaData.response;
+                } else {
+                    throw new Error('Ollama service unavailable');
+                }
+            } catch (ollamaError) {
+                console.log('Ollama not available, falling back to Gemini:', ollamaError.message);
+                // Fall through to Gemini
+            }
         }
 
-        const geminiData = await geminiResponse.json();
-        const response = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || 
-                        'I apologize, but I couldn\'t process your request at the moment.';
+        // Use Gemini if Ollama failed or not in development
+        if (!response) {
+            const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${process.env.GEMINI_API_KEY}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    contents: [{
+                        parts: [{
+                            text: systemPrompt + '\n\nUser: ' + message
+                        }]
+                    }],
+                    generationConfig: {
+                        temperature: 0.7,
+                        topK: 40,
+                        topP: 0.95,
+                        maxOutputTokens: 1024,
+                    }
+                })
+            });
+
+            if (!geminiResponse.ok) {
+                throw new Error('Gemini API unavailable');
+            }
+
+            const geminiData = await geminiResponse.json();
+            response = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || 
+                       'I apologize, but I couldn\'t process your request at the moment.';
+        }
         
         res.json({
             success: true,
-            response: response,
+            response: response || 'I\'m SarvCare AI Assistant. How can I help you today?',
             timestamp: new Date().toISOString()
         });
 
@@ -61,7 +93,7 @@ Respond professionally and helpfully within these guidelines.`;
         console.error('Chatbot error:', error);
         
         // Fallback response when API is unavailable
-        const fallbackResponse = `I'm SarvCare AI Assistant. I can help you with general health information, but I cannot provide medical diagnoses or treatments. 
+        const fallbackResponse = `I'm SarvCare AI Assistant. I can help you with general health information, but I cannot provide medical diagnoses or treatments.
 
 For any medical concerns, please consult a qualified healthcare provider.
 
