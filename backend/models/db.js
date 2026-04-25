@@ -7,6 +7,10 @@ const pool = new Pool({
     database: process.env.DB_NAME || 'sarvcare',
     user: process.env.DB_USER || 'postgres',
     password: process.env.DB_PASSWORD,
+    ssl: {
+        rejectUnauthorized: false
+    },
+    connectionString: process.env.DATABASE_URL
 });
 
 pool.on('connect', () => {
