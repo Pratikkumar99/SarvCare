@@ -1,0 +1,25 @@
+RENDER BACKEND CONFIGURATION
+============================
+
+Name: sarvcare-backend
+Environment: Node
+Plan: Free
+Root Directory: ./backend
+Build Command: npm install
+Start Command: node server.js
+Branch: main
+
+ENVIRONMENT VARIABLES:
+--------------------
+NODE_ENV=production
+PORT=10000
+DB_HOST=dpg-d7m3m3reo5us73ejkvlg-a
+DB_USER=sarvcare_user
+DB_PASSWORD=IBpj4NddAytvHfhEY0JzpQf66Bm3I8x5
+DB_NAME=sarvcare
+JWT_SECRET=sarvaCare_jwt_key_1234
+GEMINI_API_KEY=AIzaSyB6KZu-1RUZuk2WgQDR3tCKGq94xW5eLtA
+FRONTEND_URL=https://sarvcare.onrender.com
+
+DEPLOYMENT URL:
+https://sarvcare-backend.onrender.com
